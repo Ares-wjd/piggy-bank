@@ -1,6 +1,5 @@
 package io.github.areswjd.piggybank.ui.assets
 
-import androidx.annotation.StringRes
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import io.github.areswjd.piggybank.data.repository.AssetRepository
@@ -11,8 +10,8 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
-/** 작업 결과를 돌려받는 콜백. 성공하면 null, 실패하면 안내 문구. */
-typealias ResultCallback = (@StringRes Int?) -> Unit
+/** 작업 결과를 돌려받는 콜백. 성공하면 null, 실패하면 안내 문구의 문자열 리소스 ID. */
+typealias ResultCallback = (Int?) -> Unit
 
 class AssetsViewModel(private val assetRepository: AssetRepository) : ViewModel() {
 
