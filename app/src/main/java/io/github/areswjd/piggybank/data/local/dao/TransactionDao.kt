@@ -45,6 +45,9 @@ interface TransactionDao {
     )
     fun observeForAssetBetween(assetId: Long, start: LocalDate, end: LocalDate): Flow<List<TransactionDetail>>
 
+    @Query("$DETAIL_SELECT WHERE t.id = :id")
+    suspend fun getDetail(id: Long): TransactionDetail?
+
     @Query("SELECT * FROM transactions WHERE id = :id")
     suspend fun get(id: Long): TransactionEntity?
 
@@ -56,6 +59,12 @@ interface TransactionDao {
 
     @Query("DELETE FROM transactions WHERE id = :id")
     suspend fun delete(id: Long): Int
+
+    @Query("SELECT * FROM transactions ORDER BY id")
+    suspend fun getAll(): List<TransactionEntity>
+
+    @Insert
+    suspend fun insertAll(items: List<TransactionEntity>)
 
     @Query("DELETE FROM transactions")
     suspend fun deleteAll()

@@ -4,7 +4,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import io.github.areswjd.piggybank.ui.PiggyBankApp
+import io.github.areswjd.piggybank.ui.PiggyBankRoot
 import io.github.areswjd.piggybank.ui.theme.PiggyBankTheme
 
 class MainActivity : ComponentActivity() {
@@ -13,7 +13,7 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             PiggyBankTheme {
-                PiggyBankApp()
+                PiggyBankRoot()
             }
         }
     }

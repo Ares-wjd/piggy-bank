@@ -124,4 +124,19 @@ class AssetRepositoryTest : RepositoryTestBase() {
         assertEquals(listOf("현금"), tree.groups.map { it.group.name })
         assertEquals(listOf("지갑"), tree.groups.single().assets.map { it.name })
     }
+
+    @Test
+    fun onlySuccessfulWritesMarkDataChanged() = runTest {
+        val cash = assets.addGroup("현금")
+        val wallet = assets.addAsset(cash, "지갑", 0)
+        transactions.add(TransactionDraft(TransactionType.INCOME, day, 1_000, wallet))
+        assertEquals(3, changeCount)
+
+        assertFails(ValidationError.NAME_DUPLICATE) { assets.addGroup("현금") }
+        assertFails(ValidationError.BALANCE_NOT_ZERO) { assets.deleteAsset(wallet) }
+        assertEquals(3, changeCount)
+
+        assets.seedDefaultsIfEmpty() // 이미 그룹이 있으니 아무것도 안 함
+        assertEquals(3, changeCount)
+    }
 }

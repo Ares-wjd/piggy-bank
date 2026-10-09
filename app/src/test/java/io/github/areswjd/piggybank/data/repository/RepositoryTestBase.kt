@@ -18,14 +18,18 @@ abstract class RepositoryTestBase {
     protected lateinit var transactions: TransactionRepository
     private var now = 1_000L
 
+    /** 저장소가 "기록이 바뀌었다"고 알린 횟수(자동 백업 대상 표시). */
+    protected var changeCount = 0
+
     @Before
     fun setUpDatabase() {
         db = Room.inMemoryDatabaseBuilder(ApplicationProvider.getApplicationContext<Context>(), AppDatabase::class.java)
             .allowMainThreadQueries()
             .build()
         val clock = { now++ }
-        assets = AssetRepository(db, clock)
-        transactions = TransactionRepository(db, clock)
+        val onChanged: suspend () -> Unit = { changeCount++ }
+        assets = AssetRepository(db, clock, onChanged)
+        transactions = TransactionRepository(db, clock, onChanged)
     }
 
     @After

@@ -61,6 +61,12 @@ interface AssetDao {
     @Update
     suspend fun update(asset: AssetEntity)
 
+    @Query("SELECT * FROM assets ORDER BY id")
+    suspend fun getAll(): List<AssetEntity>
+
+    @Insert
+    suspend fun insertAll(items: List<AssetEntity>)
+
     @Query("DELETE FROM assets")
     suspend fun deleteAll()
 }

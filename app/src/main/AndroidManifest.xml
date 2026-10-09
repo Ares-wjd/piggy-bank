@@ -2,6 +2,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <!-- 구글 드라이브 백업 -->
+    <uses-permission android:name="android.permission.INTERNET" />
+
     <!-- allowBackup/dataExtractionRules: 안드로이드 자동 백업·기기 간 이전으로 가계부 데이터가 복사되지 않도록 막는다.
          백업은 앱의 구글 드라이브 백업 기능으로만 한다. -->
     <application

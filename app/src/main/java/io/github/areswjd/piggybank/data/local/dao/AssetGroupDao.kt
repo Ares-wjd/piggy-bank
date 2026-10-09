@@ -30,6 +30,12 @@ interface AssetGroupDao {
     @Update
     suspend fun update(group: AssetGroupEntity)
 
+    @Query("SELECT * FROM asset_groups ORDER BY id")
+    suspend fun getAll(): List<AssetGroupEntity>
+
+    @Insert
+    suspend fun insertAll(items: List<AssetGroupEntity>)
+
     @Query("DELETE FROM asset_groups")
     suspend fun deleteAll()
 }

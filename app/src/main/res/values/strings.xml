@@ -5,5 +5,126 @@
     <string name="tab_assets">자산</string>
     <string name="tab_settings">설정</string>
 
+    <!-- 공통 -->
+    <string name="action_save">저장</string>
+    <string name="action_cancel">취소</string>
+    <string name="action_delete">삭제</string>
+    <string name="action_edit">수정</string>
+    <string name="action_confirm">확인</string>
+    <string name="action_back">뒤로</string>
+    <string name="action_add">추가</string>
+    <string name="action_more">더 보기</string>
+    <string name="deleted_suffix">(삭제됨)</string>
+    <string name="won_symbol">₩</string>
+    <string name="previous_month">이전 달</string>
+    <string name="next_month">다음 달</string>
     <string name="placeholder_coming_soon">준비 중이에요</string>
+
+    <!-- 거래 유형 -->
+    <string name="type_income">수입</string>
+    <string name="type_expense">지출</string>
+    <string name="type_transfer">이체</string>
+
+    <!-- 가계부 탭 -->
+    <string name="summary_income">수입</string>
+    <string name="summary_expense">지출</string>
+    <string name="summary_net">합계</string>
+    <string name="summary_hide">합계 숨기기</string>
+    <string name="summary_show">합계 보기</string>
+    <string name="hidden_amount">••••</string>
+    <string name="ledger_empty">이번 달 기록이 아직 없어요\n+ 버튼으로 첫 기록을 남겨 보세요</string>
+    <string name="add_transaction">기록하기</string>
+
+    <!-- 거래 입력 화면 -->
+    <string name="transaction_new_title">기록하기</string>
+    <string name="transaction_edit_title">기록 수정</string>
+    <string name="field_date">날짜</string>
+    <string name="field_amount">금액</string>
+    <string name="field_asset">자산</string>
+    <string name="field_from_asset">출금 자산</string>
+    <string name="field_to_asset">입금 자산</string>
+    <string name="field_memo">내용</string>
+    <string name="field_memo_hint">내용 (선택)</string>
+    <string name="select_asset">자산을 골라 주세요</string>
+    <string name="no_assets_yet">자산이 없어요. 자산 탭에서 먼저 추가해 주세요.</string>
+    <string name="delete_transaction_title">기록을 삭제할까요?</string>
+    <string name="delete_transaction_message">삭제한 기록은 되돌릴 수 없어요.</string>
+
+    <!-- 자산 탭 -->
+    <string name="total_assets">총자산</string>
+    <string name="add_group">자산 그룹 추가</string>
+    <string name="add_asset">자산 추가</string>
+    <string name="rename_group">이름 변경</string>
+    <string name="delete_group">그룹 삭제</string>
+    <string name="group_name">그룹 이름</string>
+    <string name="group_name_hint">예: 은행</string>
+    <string name="asset_name">자산 이름</string>
+    <string name="asset_name_hint">예: 국민은행</string>
+    <string name="initial_balance">초기 잔액</string>
+    <string name="initial_balance_help">앞에 - 를 붙이면 마이너스 금액이에요</string>
+    <string name="asset_group">자산 그룹</string>
+    <string name="edit_asset">자산 수정</string>
+    <string name="delete_asset">자산 삭제</string>
+    <string name="delete_group_title">\'%1$s\' 그룹을 삭제할까요?</string>
+    <string name="delete_asset_title">\'%1$s\' 자산을 삭제할까요?</string>
+    <string name="delete_asset_message">지난 거래 기록은 그대로 남아요.</string>
+    <string name="assets_empty">아직 자산이 없어요\n자산 그룹부터 만들어 보세요</string>
+    <string name="group_empty">자산이 없어요</string>
+    <string name="current_balance">현재 잔액</string>
+    <string name="asset_history_empty">이번 달 거래가 없어요</string>
+
+    <!-- 오류 -->
+    <string name="error_name_empty">이름을 입력해 주세요</string>
+    <string name="error_name_too_long">이름은 20자까지 쓸 수 있어요</string>
+    <string name="error_name_duplicate">같은 이름이 이미 있어요</string>
+    <string name="error_group_not_found">그룹을 찾을 수 없어요</string>
+    <string name="error_group_not_empty">자산이 남아 있어 삭제할 수 없어요</string>
+    <string name="error_asset_not_found">자산을 찾을 수 없어요</string>
+    <string name="error_asset_deleted">삭제된 자산은 고를 수 없어요</string>
+    <string name="error_balance_not_zero">잔액이 0원일 때만 삭제할 수 있어요</string>
+    <string name="error_initial_balance">초기 잔액이 너무 커요</string>
+    <string name="error_amount">금액을 확인해 주세요</string>
+    <string name="error_transfer_target">입금 자산을 골라 주세요</string>
+    <string name="error_transfer_same">출금 자산과 입금 자산이 같아요</string>
+    <string name="error_memo_too_long">내용은 50자까지 쓸 수 있어요</string>
+    <string name="error_transaction_not_found">기록을 찾을 수 없어요</string>
+    <string name="error_unknown">문제가 생겼어요. 다시 시도해 주세요</string>
+
+    <!-- 로그인 -->
+    <string name="login_tagline">꿀꿀, 오늘도 차곡차곡 모아 볼까요?</string>
+    <string name="login_button">Google 계정으로 시작하기</string>
+    <string name="login_description">데이터는 내 휴대폰과 내 구글 드라이브에만 저장돼요.</string>
+    <string name="login_in_progress">로그인하는 중…</string>
+    <string name="login_failed">로그인하지 못했어요. 다시 시도해 주세요</string>
+    <string name="login_no_play_services">이 기기에서는 Google 로그인을 쓸 수 없어요</string>
+    <string name="restore_found_title">드라이브에 백업이 있어요</string>
+    <string name="restore_found_message">%1$s에 저장한 백업을 불러올까요?\n불러오지 않으면 다음 백업 때 드라이브의 백업이 지금 기기의 데이터로 바뀌어요.</string>
+    <string name="restore_action">불러오기</string>
+    <string name="restore_skip">불러오지 않기</string>
+
+    <!-- 설정 탭 -->
+    <string name="settings_account">계정</string>
+    <string name="settings_logout">로그아웃</string>
+    <string name="settings_logout_title">로그아웃할까요?</string>
+    <string name="settings_logout_message">기기에 있는 기록은 지워지지 않아요.</string>
+    <string name="settings_backup">구글 드라이브 백업</string>
+    <string name="settings_last_backup">마지막 백업</string>
+    <string name="settings_never_backed_up">아직 백업하지 않았어요</string>
+    <string name="settings_backup_failed">마지막 백업에 실패했어요</string>
+    <string name="settings_backup_pending">백업하지 않은 변경이 있어요</string>
+    <string name="settings_backup_now">지금 백업</string>
+    <string name="settings_restore">드라이브에서 복원</string>
+    <string name="settings_auto_backup">기록이 바뀌면 앱을 닫을 때 자동으로 백업해요</string>
+    <string name="settings_restore_title">드라이브에서 복원할까요?</string>
+    <string name="settings_restore_message">지금 기기의 데이터가 백업 데이터로 바뀌어요.</string>
+    <string name="settings_backup_done">백업했어요</string>
+    <string name="settings_restore_done">복원했어요</string>
+    <string name="settings_no_backup">드라이브에 백업이 없어요</string>
+    <string name="settings_backup_error">백업하지 못했어요. 인터넷 연결을 확인해 주세요</string>
+    <string name="settings_restore_error">복원하지 못했어요. 인터넷 연결을 확인해 주세요</string>
+    <string name="settings_reauth_needed">구글 드라이브 권한이 필요해요. 다시 로그인해 주세요</string>
+    <string name="settings_app_info">앱 정보</string>
+    <string name="settings_version">버전</string>
+    <string name="settings_licenses">오픈소스 라이선스</string>
+    <string name="settings_licenses_body">Jua 폰트 — SIL Open Font License 1.1\nCopyright 2018 The Jua Project Authors</string>
 </resources>

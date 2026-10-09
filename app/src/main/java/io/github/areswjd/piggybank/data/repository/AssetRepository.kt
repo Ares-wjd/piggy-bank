@@ -18,6 +18,7 @@ import kotlinx.coroutines.flow.combine
 class AssetRepository(
     private val db: AppDatabase,
     private val clock: () -> Long = System::currentTimeMillis,
+    private val onChanged: suspend () -> Unit = {},
 ) {
     private val groupDao = db.assetGroupDao()
     private val assetDao = db.assetDao()
@@ -25,13 +26,13 @@ class AssetRepository(
     fun observeAssetTree(): Flow<AssetTree> =
         combine(groupDao.observeActive(), assetDao.observeActiveWithBalance(), ::buildAssetTree)
 
-    suspend fun addGroup(name: String): Long = db.withTransaction {
+    suspend fun addGroup(name: String): Long = write {
         val trimmed = requireValidName(name)
         if (groupDao.countActiveWithName(trimmed, excludeId = 0) > 0) fail(ValidationError.NAME_DUPLICATE)
         groupDao.insert(AssetGroupEntity(name = trimmed, sortOrder = groupDao.maxSortOrder() + 1))
     }
 
-    suspend fun renameGroup(id: Long, name: String) = db.withTransaction {
+    suspend fun renameGroup(id: Long, name: String) = write {
         val group = requireActiveGroup(id)
         val trimmed = requireValidName(name)
         if (groupDao.countActiveWithName(trimmed, excludeId = id) > 0) fail(ValidationError.NAME_DUPLICATE)
@@ -39,13 +40,13 @@ class AssetRepository(
     }
 
     /** 그룹 안에 활성 자산이 없을 때만 삭제한다. */
-    suspend fun deleteGroup(id: Long) = db.withTransaction {
+    suspend fun deleteGroup(id: Long) = write {
         val group = requireActiveGroup(id)
         if (assetDao.countActiveInGroup(id) > 0) fail(ValidationError.GROUP_NOT_EMPTY)
         groupDao.update(group.copy(deletedAt = clock()))
     }
 
-    suspend fun addAsset(groupId: Long, name: String, initialBalance: Long): Long = db.withTransaction {
+    suspend fun addAsset(groupId: Long, name: String, initialBalance: Long): Long = write {
         requireActiveGroup(groupId)
         val trimmed = requireValidName(name)
         validateInitialBalance(initialBalance)?.let(::fail)
@@ -61,7 +62,7 @@ class AssetRepository(
     }
 
     /** 이름, 초기 잔액, 소속 그룹을 바꾼다. 다른 그룹으로 옮기면 그 그룹의 맨 뒤에 붙인다. */
-    suspend fun updateAsset(id: Long, groupId: Long, name: String, initialBalance: Long) = db.withTransaction {
+    suspend fun updateAsset(id: Long, groupId: Long, name: String, initialBalance: Long) = write {
         val asset = requireActiveAsset(id)
         requireActiveGroup(groupId)
         val trimmed = requireValidName(name)
@@ -74,19 +75,25 @@ class AssetRepository(
     }
 
     /** 현재 잔액이 0원일 때만 삭제한다. 거래 내역은 그대로 남는다. */
-    suspend fun deleteAsset(id: Long) = db.withTransaction {
+    suspend fun deleteAsset(id: Long) = write {
         val asset = requireActiveAsset(id)
         if ((assetDao.balanceOf(id) ?: 0L) != 0L) fail(ValidationError.BALANCE_NOT_ZERO)
         assetDao.update(asset.copy(deletedAt = clock()))
     }
 
     /** 처음 시작할 때(그룹이 하나도 없을 때) 기본 자산 "현금 > 지갑"을 만든다. */
-    suspend fun seedDefaultsIfEmpty() = db.withTransaction {
-        if (groupDao.countAll() == 0) {
+    suspend fun seedDefaultsIfEmpty() {
+        val seeded = db.withTransaction {
+            if (groupDao.countAll() > 0) return@withTransaction false
             val groupId = groupDao.insert(AssetGroupEntity(name = DEFAULT_GROUP_NAME, sortOrder = 0))
             assetDao.insert(AssetEntity(groupId = groupId, name = DEFAULT_ASSET_NAME, initialBalance = 0, sortOrder = 0))
+            true
         }
+        if (seeded) onChanged()
     }
+
+    /** 쓰기 작업을 한 트랜잭션으로 묶고, 성공하면 변경을 알린다(자동 백업 대상 표시). */
+    private suspend fun <R> write(block: suspend () -> R): R = db.withTransaction(block).also { onChanged() }
 
     private suspend fun requireActiveGroup(id: Long): AssetGroupEntity {
         val group = groupDao.get(id)
