@@ -38,6 +38,7 @@ import io.github.areswjd.piggybank.data.session.SessionState
 import io.github.areswjd.piggybank.ui.assets.AssetDetailScreen
 import io.github.areswjd.piggybank.ui.assets.AssetDetailViewModel
 import io.github.areswjd.piggybank.ui.assets.AssetsScreen
+import io.github.areswjd.piggybank.ui.design.DesignScreen
 import io.github.areswjd.piggybank.ui.ledger.LedgerScreen
 import io.github.areswjd.piggybank.ui.session.LoginScreen
 import io.github.areswjd.piggybank.ui.session.SessionViewModel
@@ -61,6 +62,7 @@ enum class TopLevelDestination(
 private object Routes {
     const val TRANSACTION = "transaction?${TransactionEditViewModel.ARG_ID}={${TransactionEditViewModel.ARG_ID}}"
     const val ASSET_DETAIL = "asset/{${AssetDetailViewModel.ARG_ASSET_ID}}"
+    const val DESIGN = "design"
 
     fun transaction(id: Long? = null) = if (id == null) "transaction" else "transaction?${TransactionEditViewModel.ARG_ID}=$id"
     fun assetDetail(id: Long) = "asset/$id"
@@ -127,7 +129,10 @@ fun PiggyBankApp() {
             composable(TopLevelDestination.ASSETS.route) {
                 AssetsScreen(onAssetClick = { navController.navigate(Routes.assetDetail(it)) })
             }
-            composable(TopLevelDestination.SETTINGS.route) { SettingsScreen() }
+            composable(TopLevelDestination.SETTINGS.route) {
+                SettingsScreen(onOpenDesign = { navController.navigate(Routes.DESIGN) })
+            }
+            composable(Routes.DESIGN) { DesignScreen(onBack = { navController.popBackStack() }) }
             composable(
                 Routes.TRANSACTION,
                 arguments = listOf(

@@ -9,12 +9,14 @@ import androidx.lifecycle.viewModelScope
 import io.github.areswjd.piggybank.R
 import io.github.areswjd.piggybank.data.backup.BackupManager
 import io.github.areswjd.piggybank.data.backup.BackupOutcome
+import io.github.areswjd.piggybank.data.icon.AppIconManager
 import io.github.areswjd.piggybank.data.preferences.BackupStatus
 import io.github.areswjd.piggybank.data.preferences.UserPreferences
 import io.github.areswjd.piggybank.data.session.SessionRepository
 import io.github.areswjd.piggybank.data.update.CheckResult
 import io.github.areswjd.piggybank.data.update.UpdateManager
 import io.github.areswjd.piggybank.model.AppDesign
+import io.github.areswjd.piggybank.model.AppIcon
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharingStarted
@@ -28,6 +30,7 @@ class SettingsViewModel(
     private val backupManager: BackupManager,
     private val updateManager: UpdateManager,
     private val preferences: UserPreferences,
+    private val iconManager: AppIconManager,
 ) : ViewModel() {
 
     val email: StateFlow<String?> =
@@ -35,6 +38,9 @@ class SettingsViewModel(
 
     val design: StateFlow<AppDesign> =
         preferences.appDesign.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), AppDesign.DEFAULT)
+
+    /** 홈 화면 아이콘. 디자인 화면에서 바꾸면 여기도 바로 바뀐다. */
+    val icon: StateFlow<AppIcon> = iconManager.icon
 
     val backupStatus: StateFlow<BackupStatus?> =
         preferences.backupStatus.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), null)
@@ -45,6 +51,10 @@ class SettingsViewModel(
 
     private val _messages = Channel<Int>(Channel.BUFFERED)
     val messages: Flow<Int> = _messages.receiveAsFlow()
+
+    init {
+        viewModelScope.launch { iconManager.refresh() }
+    }
 
     fun backupNow() = runBusy {
         message(backupManager.backupNow(), success = R.string.settings_backup_done, failure = R.string.settings_backup_error)
@@ -64,10 +74,6 @@ class SettingsViewModel(
             CheckResult.DISABLED -> R.string.settings_update_disabled
         }
         _messages.send(res)
-    }
-
-    fun setDesign(design: AppDesign) {
-        viewModelScope.launch { preferences.setAppDesign(design) }
     }
 
     fun logout() {

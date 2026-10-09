@@ -1,10 +1,15 @@
 package io.github.areswjd.piggybank.model
 
-/** 화면 디자인. 설정에서 고르며, 고르기 전에는 [DEFAULT]. [key]는 저장용이라 바꾸지 않는다. */
+/** 화면 테마. [key]는 기기 설정에 저장하는 값이라 바꾸면 안 된다. */
 enum class AppDesign(val key: String) {
     STRAWBERRY("strawberry"),
     MINT("mint"),
     BUTTER("butter"),
+    LAVENDER("lavender"),
+    SKY("sky"),
+    PEACH("peach"),
+    MATCHA("matcha"),
+    NIGHT("night"),
     ;
 
     companion object {

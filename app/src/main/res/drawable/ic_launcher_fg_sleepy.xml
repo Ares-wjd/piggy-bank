@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 앱 아이콘 5. 잠꾸러기 돼지. 디자인 시안 그림을 옮긴 것. 108dp 캔버스, 가운데 72dp가 보인다. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:aapt="http://schemas.android.com/aapt"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <group
+        android:pivotX="54"
+        android:pivotY="54"
+        android:scaleX="0.667"
+        android:scaleY="0.667">
+        <path
+            android:pathData="M30,14a14,14 0 1 0 12,22a11,11 0 1 1 -12,-22z"
+            android:fillColor="#FFC7D6" />
+        <path
+            android:pathData="M49.4,18a2.6,2.6 0,1 1,5.2,0a2.6,2.6 0,1 1,-5.2,0z"
+            android:fillColor="#FFC7D6" />
+        <path
+            android:pathData="M24.0,64.2L31.0,33.9L52.0,48.2Z"
+            android:fillColor="#FFA9C1"
+            android:strokeColor="#FFA9C1"
+            android:strokeWidth="9"
+            android:strokeLineJoin="round" />
+        <path
+            android:pathData="M29.8,58.0L33.3,42.8L43.8,50.0Z"
+            android:fillColor="#FF7FA3"
+            android:strokeColor="#FF7FA3"
+            android:strokeWidth="4"
+            android:strokeLineJoin="round" />
+        <path
+            android:pathData="M104.0,64.2L97.0,33.9L76.0,48.2Z"
+            android:fillColor="#FFA9C1"
+            android:strokeColor="#FFA9C1"
+            android:strokeWidth="9"
+            android:strokeLineJoin="round" />
+        <path
+            android:pathData="M98.2,58.0L94.7,42.8L84.2,50.0Z"
+            android:fillColor="#FF7FA3"
+            android:strokeColor="#FF7FA3"
+            android:strokeWidth="4"
+            android:strokeLineJoin="round" />
+        <path
+            android:pathData="M14,86a50,42 0,1 1,100,0a50,42 0,1 1,-100,0z">
+            <aapt:attr name="android:fillColor">
+                <gradient android:type="radial" android:centerX="50" android:centerY="67.52" android:gradientRadius="73.6">
+                    <item android:offset="0" android:color="#FFC7D6" />
+                    <item android:offset="1" android:color="#FFA9C1" />
+                </gradient>
+            </aapt:attr>
+        </path>
+        <path
+            android:pathData="M40.0,68.2Q46.0,74.2 52.0,68.2"
+            android:strokeColor="#6E2A44"
+            android:strokeWidth="4.4"
+            android:strokeLineCap="round" />
+        <path
+            android:pathData="M76.0,68.2Q82.0,74.2 88.0,68.2"
+            android:strokeColor="#6E2A44"
+            android:strokeWidth="4.4"
+            android:strokeLineCap="round" />
+        <path
+            android:pathData="M47.5,87.7a16.5,11.3 0,1 1,33,0a16.5,11.3 0,1 1,-33,0z"
+            android:fillColor="#FF7FA3" />
+        <path
+            android:pathData="M55.5,87.7a2.6,3.9 0,1 1,5.2,0a2.6,3.9 0,1 1,-5.2,0z"
+            android:fillColor="#6E2A44" />
+        <path
+            android:pathData="M67.3,87.7a2.6,3.9 0,1 1,5.2,0a2.6,3.9 0,1 1,-5.2,0z"
+            android:fillColor="#6E2A44" />
+    </group>
+</vector>

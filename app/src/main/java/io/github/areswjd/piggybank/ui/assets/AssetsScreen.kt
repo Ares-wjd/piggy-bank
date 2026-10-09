@@ -11,11 +11,9 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material.icons.rounded.MoreVert
@@ -189,7 +187,7 @@ fun AssetsScreen(
     }
 }
 
-/** 총자산 카드. 민트 사탕은 돼지를 오른쪽에, 나머지는 왼쪽에 둔다. */
+/** 총자산 카드. 진한 색 카드(FILLED) 테마는 캐릭터를 오른쪽에, 나머지는 왼쪽에 둔다. */
 @Composable
 private fun TotalCard(total: Long) {
     val colors = highlightColors()
@@ -197,7 +195,7 @@ private fun TotalCard(total: Long) {
     HighlightCard {
         Row(modifier = Modifier.padding(20.dp), verticalAlignment = Alignment.CenterVertically) {
             if (!mascotOnRight) {
-                PigMascot(Modifier.size(56.dp))
+                PigMascot(56.dp)
                 Spacer(Modifier.width(16.dp))
             }
             Column(modifier = Modifier.weight(1f)) {
@@ -213,15 +211,8 @@ private fun TotalCard(total: Long) {
                 )
             }
             if (mascotOnRight) {
-                Box(
-                    modifier = Modifier
-                        .size(64.dp)
-                        .clip(CircleShape)
-                        .background(MaterialTheme.colorScheme.surfaceVariant),
-                    contentAlignment = Alignment.Center,
-                ) {
-                    PigMascot(Modifier.size(48.dp))
-                }
+                Spacer(Modifier.width(16.dp))
+                PigMascot(56.dp)
             }
         }
     }

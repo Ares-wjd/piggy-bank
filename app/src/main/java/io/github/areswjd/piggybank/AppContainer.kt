@@ -5,6 +5,7 @@ import io.github.areswjd.piggybank.data.backup.BackupManager
 import io.github.areswjd.piggybank.data.backup.LocalBackupStore
 import io.github.areswjd.piggybank.data.drive.DriveClient
 import io.github.areswjd.piggybank.data.drive.GoogleDriveAuth
+import io.github.areswjd.piggybank.data.icon.AppIconManager
 import io.github.areswjd.piggybank.data.local.AppDatabase
 import io.github.areswjd.piggybank.data.local.DatabaseFactory
 import io.github.areswjd.piggybank.data.preferences.UserPreferences
@@ -20,6 +21,7 @@ class AppContainer(context: Context) {
 
     val preferences = UserPreferences(appContext)
     val driveAuth = GoogleDriveAuth(appContext)
+    val appIconManager = AppIconManager(appContext)
 
     val database: AppDatabase by lazy { DatabaseFactory.createEncrypted(appContext) }
 
