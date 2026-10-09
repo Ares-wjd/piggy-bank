@@ -2,6 +2,8 @@
 
 간단한 개인용 가계부 안드로이드 앱. 데이터는 기기에 저장하고, 사용자 본인의 구글 드라이브에 백업한다.
 
+![앱 아이콘](docs/icon-preview.png)
+
 - 기능 명세: [docs/SPEC.md](docs/SPEC.md)
 - Google Cloud 설정(로그인·드라이브 백업): [docs/GOOGLE_CLOUD_SETUP.md](docs/GOOGLE_CLOUD_SETUP.md)
 - 릴리스 APK 만들기와 배포: [docs/RELEASE.md](docs/RELEASE.md)
