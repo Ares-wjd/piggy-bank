@@ -127,11 +127,51 @@
     <string name="settings_app_info">앱 정보</string>
     <string name="settings_version">버전</string>
     <string name="settings_version_format">%1$s (빌드 %2$d)</string>
-    <string name="settings_design">화면 디자인</string>
+    <string name="settings_screen">화면</string>
+    <string name="settings_design">디자인</string>
+    <string name="settings_design_summary">%1$s · %2$s</string>
+
+    <!-- 디자인 화면 (설정 → 디자인) -->
+    <string name="design_title">디자인</string>
+    <string name="design_tab_theme">테마</string>
+    <string name="design_tab_icon">앱 아이콘</string>
+    <string name="design_default">기본</string>
+    <string name="design_preview">미리보기</string>
+    <string name="design_preview_memo_lunch">점심</string>
+    <string name="design_preview_memo_salary">월급</string>
+    <string name="design_preview_group_cash">현금</string>
+    <string name="design_preview_asset_wallet">지갑</string>
+    <string name="design_preview_group_bank">은행</string>
+    <string name="design_preview_asset_bank">국민</string>
+    <string name="design_theme_hint">누르면 위 미리보기가 바뀌어요</string>
+    <string name="design_apply_theme">이 디자인으로 바꾸기</string>
+    <string name="design_current_theme">지금 쓰는 디자인이에요</string>
+    <string name="design_icon_home_preview">홈 화면에서 이렇게 보여요</string>
+    <string name="design_icon_hint">휴대폰에 따라 바꾼 뒤 앱이 잠깐 닫히거나, 홈 화면에 따로 둔 아이콘을 다시 놓아야 할 수 있어요</string>
+    <string name="design_apply_icon">이 아이콘으로 바꾸기</string>
+    <string name="design_current_icon">지금 쓰는 아이콘이에요</string>
+    <string name="design_in_use">사용 중</string>
+    <string name="design_icon_changed">아이콘을 바꿨어요. 홈 화면에 보이기까지 조금 걸릴 수 있어요</string>
+    <string name="design_icon_failed">아이콘을 바꾸지 못했어요</string>
+
     <string name="design_strawberry">딸기우유</string>
     <string name="design_mint">민트 사탕</string>
     <string name="design_butter">버터 다이어리</string>
-    <string name="design_default">기본</string>
+    <string name="design_lavender">라벤더 꿈</string>
+    <string name="design_sky">하늘 구름</string>
+    <string name="design_peach">복숭아 젤리</string>
+    <string name="design_matcha">말차 라떼</string>
+    <string name="design_night">별밤</string>
+
+    <string name="icon_coin">동전 돼지</string>
+    <string name="icon_peek">쏙 돼지</string>
+    <string name="icon_big_snout">왕코 돼지</string>
+    <string name="icon_wink">윙크 돼지</string>
+    <string name="icon_sleepy">잠꾸러기 돼지</string>
+    <string name="icon_bank">돼지 저금통</string>
+    <string name="icon_heart">하트코 돼지</string>
+    <string name="icon_ball">동글 돼지</string>
+    <string name="icon_gold_coin">황금 동전</string>
     <string name="settings_check_update">업데이트 확인</string>
     <string name="settings_up_to_date">최신 버전이에요</string>
     <string name="settings_update_check_failed">업데이트를 확인하지 못했어요. 인터넷 연결을 확인해 주세요</string>

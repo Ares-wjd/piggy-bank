@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- 앱 아이콘 배경색 (아이콘마다 하나) -->
+    <color name="icon_bg_coin">#FFF0DB</color>
+    <color name="icon_bg_peek">#FFE3D3</color>
+    <color name="icon_bg_bigsnout">#CDEFE2</color>
+    <color name="icon_bg_wink">#CFE5FF</color>
+    <color name="icon_bg_sleepy">#2A2F5C</color>
+    <color name="icon_bg_bank">#DDF2E0</color>
+    <color name="icon_bg_heart">#FFE7A3</color>
+    <color name="icon_bg_ball">#E4DCFF</color>
+    <color name="icon_bg_coinface">#FFF6DC</color>
+</resources>

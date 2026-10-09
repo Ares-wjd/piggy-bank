@@ -26,13 +26,13 @@ data class CardBorder(val width: Dp, val light: Color, val dark: Color, val dash
 /** 거래 유형 표시: 동그라미 안 화살표 / 둥근 네모 안 화살표 / 도장 글자(수·지·이). */
 enum class BadgeStyle { CIRCLE_ICON, ROUNDED_ICON, STAMP }
 
-/** 기록(+) 버튼 모양. */
-enum class FabStyle { SQUARE, EXTENDED, CIRCLE_PENCIL }
+/** 기록(+) 버튼 모양: 둥근 네모 + / 알약 "+ 기록" / 동그라미 + 연필 / 동그라미 +. */
+enum class FabStyle { SQUARE, EXTENDED, CIRCLE_PENCIL, CIRCLE }
 
 /** 총자산·현재 잔액처럼 강조하는 카드: 연한 색 / 진한 주 색 / 테두리. */
 enum class HighlightStyle { CONTAINER, FILLED, OUTLINED }
 
-/** 디자인마다 다른 화면 장식. */
+/** 테마마다 다른 화면 장식. */
 @Immutable
 data class PiggyStyle(
     val cardBorder: CardBorder?,
@@ -76,16 +76,20 @@ fun PiggyBankTheme(
     content: @Composable () -> Unit,
 ) {
     val spec = design.spec()
+    val dark = darkTheme || spec.forceDark
     CompositionLocalProvider(
-        LocalPiggyColors provides if (darkTheme) spec.darkExtras else spec.lightExtras,
+        LocalPiggyColors provides if (dark) spec.darkExtras else spec.lightExtras,
         LocalPiggyStyle provides spec.style,
-        LocalDarkTheme provides darkTheme,
+        LocalDarkTheme provides dark,
     ) {
         MaterialTheme(
-            colorScheme = if (darkTheme) spec.dark else spec.light,
+            colorScheme = if (dark) spec.dark else spec.light,
             typography = spec.typography,
             shapes = spec.shapes,
             content = content,
         )
     }
 }
+
+/** 폰 설정과 상관없이 항상 어두운 테마인지(H. 별밤). 상태 표시줄 아이콘 색을 정할 때 쓴다. */
+fun AppDesign.isAlwaysDark(): Boolean = spec().forceDark

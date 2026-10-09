@@ -1,5 +1,6 @@
 package io.github.areswjd.piggybank.ui.settings
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
@@ -13,8 +14,10 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.rounded.KeyboardArrowRight
 import androidx.compose.material.icons.rounded.CloudDownload
 import androidx.compose.material.icons.rounded.CloudUpload
+import androidx.compose.material.icons.rounded.Palette
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -37,6 +40,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -45,18 +49,27 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import io.github.areswjd.piggybank.BuildConfig
 import io.github.areswjd.piggybank.R
 import io.github.areswjd.piggybank.data.preferences.BackupStatus
+import io.github.areswjd.piggybank.model.AppDesign
+import io.github.areswjd.piggybank.model.AppIcon
 import io.github.areswjd.piggybank.ui.AppViewModelProvider
 import io.github.areswjd.piggybank.ui.common.ConfirmDialog
 import io.github.areswjd.piggybank.ui.common.PigMascot
 import io.github.areswjd.piggybank.ui.common.PiggyCard
+import io.github.areswjd.piggybank.ui.design.AppIconImage
+import io.github.areswjd.piggybank.ui.design.ThemeSwatch
+import io.github.areswjd.piggybank.ui.design.labelRes
 import io.github.areswjd.piggybank.util.formatDateTime
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SettingsScreen(viewModel: SettingsViewModel = viewModel(factory = AppViewModelProvider.Factory)) {
+fun SettingsScreen(
+    onOpenDesign: () -> Unit,
+    viewModel: SettingsViewModel = viewModel(factory = AppViewModelProvider.Factory),
+) {
     val email by viewModel.email.collectAsStateWithLifecycle()
     val backupStatus by viewModel.backupStatus.collectAsStateWithLifecycle()
     val design by viewModel.design.collectAsStateWithLifecycle()
+    val icon by viewModel.icon.collectAsStateWithLifecycle()
     val snackbarHostState = remember { SnackbarHostState() }
     val context = LocalContext.current
 
@@ -88,8 +101,8 @@ fun SettingsScreen(viewModel: SettingsViewModel = viewModel(factory = AppViewMod
                 }
             }
 
-            SettingsCard(title = stringResource(R.string.settings_design)) {
-                DesignPicker(selected = design, onSelect = viewModel::setDesign)
+            SettingsCard(title = stringResource(R.string.settings_screen)) {
+                DesignRow(design, icon, onClick = onOpenDesign)
             }
 
             SettingsCard(title = stringResource(R.string.settings_backup)) {
@@ -196,6 +209,39 @@ private fun SettingsCard(title: String, content: @Composable ColumnScope.() -> U
             Spacer(Modifier.height(12.dp))
             content()
         }
+    }
+}
+
+/** "디자인 · 딸기우유 · 동전 돼지  [견본][아이콘] >" 한 줄. 누르면 디자인 화면이 열린다. */
+@Composable
+private fun DesignRow(design: AppDesign, icon: AppIcon, onClick: () -> Unit) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clip(MaterialTheme.shapes.small)
+            .clickable(onClick = onClick)
+            .padding(vertical = 4.dp),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Icon(Icons.Rounded.Palette, contentDescription = null, tint = MaterialTheme.colorScheme.onSurfaceVariant)
+        Spacer(Modifier.width(12.dp))
+        Column(modifier = Modifier.weight(1f)) {
+            Text(stringResource(R.string.settings_design), style = MaterialTheme.typography.bodyLarge)
+            Text(
+                stringResource(R.string.settings_design_summary, stringResource(design.labelRes()), stringResource(icon.labelRes())),
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+        }
+        Spacer(Modifier.width(8.dp))
+        ThemeSwatch(design, 24.dp)
+        Spacer(Modifier.width(6.dp))
+        AppIconImage(icon, 28.dp)
+        Icon(
+            Icons.AutoMirrored.Rounded.KeyboardArrowRight,
+            contentDescription = null,
+            tint = MaterialTheme.colorScheme.onSurfaceVariant,
+        )
     }
 }
 

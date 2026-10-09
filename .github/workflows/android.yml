@@ -80,9 +80,12 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
+          # 커밋 메시지의 꼬리말(Co-Authored-By 등)은 업데이트 팝업에 보이지 않게 뺀다.
           {
             echo "versionCode: $GITHUB_RUN_NUMBER"
-            git log -1 --pretty=%B
+            git log -1 --pretty=%B \
+              | sed -E '/^(Co-Authored-By|Claude-Session|Signed-off-by):/Id' \
+              | sed -e :a -e '/^\n*$/{$d;N;ba' -e '}'
           } > release-notes.txt
           gh release delete dev-latest --cleanup-tag --yes || true
           gh release create dev-latest piggybank.apk \

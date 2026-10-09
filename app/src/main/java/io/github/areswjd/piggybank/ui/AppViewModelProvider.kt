@@ -9,6 +9,7 @@ import io.github.areswjd.piggybank.AppContainer
 import io.github.areswjd.piggybank.PiggyBankApplication
 import io.github.areswjd.piggybank.ui.assets.AssetDetailViewModel
 import io.github.areswjd.piggybank.ui.assets.AssetsViewModel
+import io.github.areswjd.piggybank.ui.design.DesignViewModel
 import io.github.areswjd.piggybank.ui.ledger.LedgerViewModel
 import io.github.areswjd.piggybank.ui.session.SessionViewModel
 import io.github.areswjd.piggybank.ui.settings.SettingsViewModel
@@ -33,8 +34,15 @@ object AppViewModelProvider {
             AssetDetailViewModel(createSavedStateHandle(), container().assetRepository, container().transactionRepository)
         }
         initializer {
-            SettingsViewModel(container().session, container().backupManager, container().updateManager, container().preferences)
+            SettingsViewModel(
+                container().session,
+                container().backupManager,
+                container().updateManager,
+                container().preferences,
+                container().appIconManager,
+            )
         }
+        initializer { DesignViewModel(container().preferences, container().appIconManager) }
         initializer { UpdateViewModel(container().updateManager) }
     }
 }

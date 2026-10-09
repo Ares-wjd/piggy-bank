@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- 앱 아이콘 / 마스코트 -->
-    <color name="ic_launcher_background">#FFF0DB</color>
+    <!-- 돼지 마스코트 -->
     <color name="pig_body">#FFB8CB</color>
     <color name="pig_inner_ear">#FF94B2</color>
     <color name="pig_line">#E07A98</color>

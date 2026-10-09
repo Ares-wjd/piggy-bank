@@ -92,7 +92,7 @@ fun LedgerScreen(
 
 /** "수입 3,000,000 · 지출 452,000 · 합계 2,548,000 [눈]" 한 줄. 길면 글자를 줄여 한 줄에 맞춘다. */
 @Composable
-private fun SummaryBar(
+internal fun SummaryBar(
     summary: MonthlySummary,
     hidden: Boolean,
     onToggleHidden: () -> Unit,
@@ -167,7 +167,7 @@ private fun SummaryBar(
 
 /** 기록하기 버튼. 화면 디자인에 따라 둥근 네모 / "+ 기록" 알약 / 동그라미 연필. */
 @Composable
-private fun AddTransactionButton(onClick: () -> Unit) {
+internal fun AddTransactionButton(onClick: () -> Unit) {
     val label = stringResource(R.string.add_transaction)
     val containerColor = MaterialTheme.colorScheme.primary
     val contentColor = MaterialTheme.colorScheme.onPrimary
@@ -190,6 +190,14 @@ private fun AddTransactionButton(onClick: () -> Unit) {
             shape = CircleShape,
         ) {
             Icon(Icons.Rounded.Edit, contentDescription = label)
+        }
+        FabStyle.CIRCLE -> FloatingActionButton(
+            onClick = onClick,
+            containerColor = containerColor,
+            contentColor = contentColor,
+            shape = CircleShape,
+        ) {
+            Icon(Icons.Rounded.Add, contentDescription = label)
         }
     }
 }
