@@ -17,6 +17,7 @@ import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -43,6 +44,8 @@ import io.github.areswjd.piggybank.ui.session.SessionViewModel
 import io.github.areswjd.piggybank.ui.settings.SettingsScreen
 import io.github.areswjd.piggybank.ui.transaction.TransactionEditScreen
 import io.github.areswjd.piggybank.ui.transaction.TransactionEditViewModel
+import io.github.areswjd.piggybank.ui.update.UpdateDialogs
+import io.github.areswjd.piggybank.ui.update.UpdateViewModel
 
 /** 하단 탭으로 이동하는 최상위 화면. */
 enum class TopLevelDestination(
@@ -63,15 +66,21 @@ private object Routes {
     fun assetDetail(id: Long) = "asset/$id"
 }
 
-/** 로그인 여부에 따라 로그인 화면 또는 메인 화면을 보여준다. */
+/** 로그인 여부에 따라 로그인 화면 또는 메인 화면을 보여준다. 업데이트 확인은 로그인과 상관없이 한다. */
 @Composable
-fun PiggyBankRoot(sessionViewModel: SessionViewModel = viewModel(factory = AppViewModelProvider.Factory)) {
+fun PiggyBankRoot(
+    sessionViewModel: SessionViewModel = viewModel(factory = AppViewModelProvider.Factory),
+    updateViewModel: UpdateViewModel = viewModel(factory = AppViewModelProvider.Factory),
+) {
     val state by sessionViewModel.state.collectAsStateWithLifecycle()
     when (state) {
         SessionState.Loading -> Box(Modifier.fillMaxSize())
         SessionState.SignedOut -> LoginScreen(sessionViewModel)
         is SessionState.SignedIn -> PiggyBankApp()
     }
+
+    LaunchedEffect(Unit) { updateViewModel.checkOnLaunch() }
+    UpdateDialogs(updateViewModel)
 }
 
 @Composable

@@ -16,9 +16,9 @@
     <string name="action_more">더 보기</string>
     <string name="deleted_suffix">(삭제됨)</string>
     <string name="won_symbol">₩</string>
+    <string name="won_unit">원</string>
     <string name="previous_month">이전 달</string>
     <string name="next_month">다음 달</string>
-    <string name="placeholder_coming_soon">준비 중이에요</string>
 
     <!-- 거래 유형 -->
     <string name="type_income">수입</string>
@@ -34,6 +34,7 @@
     <string name="hidden_amount">••••</string>
     <string name="ledger_empty">이번 달 기록이 아직 없어요\n+ 버튼으로 첫 기록을 남겨 보세요</string>
     <string name="add_transaction">기록하기</string>
+    <string name="add_transaction_short">기록</string>
 
     <!-- 거래 입력 화면 -->
     <string name="transaction_new_title">기록하기</string>
@@ -125,6 +126,31 @@
     <string name="settings_reauth_needed">구글 드라이브 권한이 필요해요. 다시 로그인해 주세요</string>
     <string name="settings_app_info">앱 정보</string>
     <string name="settings_version">버전</string>
+    <string name="settings_version_format">%1$s (빌드 %2$d)</string>
+    <string name="settings_design">화면 디자인</string>
+    <string name="design_strawberry">딸기우유</string>
+    <string name="design_mint">민트 사탕</string>
+    <string name="design_butter">버터 다이어리</string>
+    <string name="design_default">기본</string>
+    <string name="settings_check_update">업데이트 확인</string>
+    <string name="settings_up_to_date">최신 버전이에요</string>
+    <string name="settings_update_check_failed">업데이트를 확인하지 못했어요. 인터넷 연결을 확인해 주세요</string>
+    <string name="settings_update_disabled">직접 빌드한 앱에서는 업데이트를 확인하지 않아요</string>
     <string name="settings_licenses">오픈소스 라이선스</string>
-    <string name="settings_licenses_body">Jua 폰트 — SIL Open Font License 1.1\nCopyright 2018 The Jua Project Authors</string>
+    <string name="settings_licenses_body">글꼴은 모두 SIL Open Font License 1.1을 따릅니다.\n\nJua — Copyright 2018 The Jua Project Authors\n고운돋움 — Copyright 2021 The Gowun Dodum Project Authors\n개구 — Copyright 2018 The Gaegu Project Authors</string>
+
+    <!-- 앱 업데이트 -->
+    <string name="update_available_title">새 버전이 나왔어요 (빌드 %1$d)</string>
+    <string name="update_available_message">업데이트해도 기록은 그대로 남아요.</string>
+    <string name="update_now">업데이트</string>
+    <string name="update_later">나중에</string>
+    <string name="update_skip">이 버전 건너뛰기</string>
+    <string name="update_downloading">새 버전을 받는 중이에요</string>
+    <string name="update_failed_title">업데이트를 받지 못했어요</string>
+    <string name="update_failed_message">인터넷 연결을 확인하고 다시 시도해 주세요.</string>
+    <string name="update_retry">다시 시도</string>
+    <string name="update_close">닫기</string>
+    <string name="update_permission_title">설치 권한이 필요해요</string>
+    <string name="update_permission_message">설정 화면에서 \'이 출처 허용\'을 켜고 돌아오면 설치가 이어져요. 처음 한 번만 하면 돼요.</string>
+    <string name="update_open_settings">설정 열기</string>
 </resources>

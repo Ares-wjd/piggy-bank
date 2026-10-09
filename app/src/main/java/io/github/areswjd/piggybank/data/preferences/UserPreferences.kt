@@ -8,6 +8,7 @@ import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.longPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
+import io.github.areswjd.piggybank.model.AppDesign
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
@@ -30,6 +31,12 @@ class UserPreferences(context: Context) {
 
     val summaryHidden: Flow<Boolean> = dataStore.data.map { it[SUMMARY_HIDDEN] ?: false }
 
+    /** 화면 디자인. 고르기 전에는 A(딸기우유). */
+    val appDesign: Flow<AppDesign> = dataStore.data.map { AppDesign.fromKey(it[APP_DESIGN]) }
+
+    /** "이 버전 건너뛰기"로 넘긴 빌드 번호. */
+    val skippedVersionCode: Flow<Long?> = dataStore.data.map { it[SKIPPED_VERSION_CODE] }
+
     val backupStatus: Flow<BackupStatus> = dataStore.data.map {
         BackupStatus(
             lastBackupAt = it[LAST_BACKUP_AT],
@@ -44,6 +51,14 @@ class UserPreferences(context: Context) {
 
     suspend fun setAccountEmail(email: String?) {
         dataStore.edit { if (email == null) it.remove(ACCOUNT_EMAIL) else it[ACCOUNT_EMAIL] = email }
+    }
+
+    suspend fun setAppDesign(design: AppDesign) {
+        dataStore.edit { it[APP_DESIGN] = design.key }
+    }
+
+    suspend fun setSkippedVersionCode(versionCode: Long) {
+        dataStore.edit { it[SKIPPED_VERSION_CODE] = versionCode }
     }
 
     suspend fun setSummaryHidden(hidden: Boolean) {
@@ -87,6 +102,8 @@ class UserPreferences(context: Context) {
     private companion object {
         val ACCOUNT_EMAIL = stringPreferencesKey("account_email")
         val SUMMARY_HIDDEN = booleanPreferencesKey("summary_hidden")
+        val APP_DESIGN = stringPreferencesKey("app_design")
+        val SKIPPED_VERSION_CODE = longPreferencesKey("skipped_version_code")
         val LAST_ASSET_ID = longPreferencesKey("last_asset_id")
         val CHANGE_VERSION = longPreferencesKey("change_version")
         val BACKED_UP_VERSION = longPreferencesKey("backed_up_version")

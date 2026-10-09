@@ -11,8 +11,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.ArrowBack
 import androidx.compose.material.icons.rounded.DeleteOutline
 import androidx.compose.material.icons.rounded.Edit
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -42,6 +40,8 @@ import io.github.areswjd.piggybank.R
 import io.github.areswjd.piggybank.ui.AppViewModelProvider
 import io.github.areswjd.piggybank.ui.common.ConfirmDialog
 import io.github.areswjd.piggybank.ui.common.DayCard
+import io.github.areswjd.piggybank.ui.common.HighlightCard
+import io.github.areswjd.piggybank.ui.common.highlightColors
 import io.github.areswjd.piggybank.ui.common.MonthSelector
 import io.github.areswjd.piggybank.ui.theme.PiggyTheme
 import io.github.areswjd.piggybank.util.formatMoney
@@ -102,27 +102,24 @@ fun AssetDetailScreen(
             verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
             item {
-                Card(
-                    modifier = Modifier.fillMaxWidth(),
-                    shape = MaterialTheme.shapes.large,
-                    colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primaryContainer),
-                ) {
+                val colors = highlightColors()
+                HighlightCard {
                     Column(modifier = Modifier.padding(20.dp)) {
                         Text(
                             "${group.name} > ${asset.name}",
                             style = MaterialTheme.typography.labelLarge,
-                            color = MaterialTheme.colorScheme.onPrimaryContainer,
+                            color = colors.subContent,
                         )
                         Text(
                             stringResource(R.string.current_balance),
                             style = MaterialTheme.typography.bodySmall,
-                            color = MaterialTheme.colorScheme.onPrimaryContainer,
+                            color = colors.subContent,
                             modifier = Modifier.padding(top = 8.dp),
                         )
                         Text(
                             formatMoney(asset.balance),
                             style = MaterialTheme.typography.headlineMedium,
-                            color = if (asset.balance < 0) PiggyTheme.colors.expense else MaterialTheme.colorScheme.onPrimaryContainer,
+                            color = if (asset.balance < 0) PiggyTheme.colors.expense else colors.content,
                         )
                     }
                 }

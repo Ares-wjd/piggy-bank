@@ -1,6 +1,7 @@
 package io.github.areswjd.piggybank.ui.transaction
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -11,6 +12,7 @@ import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
@@ -46,11 +48,13 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -61,9 +65,11 @@ import io.github.areswjd.piggybank.model.TransactionType
 import io.github.areswjd.piggybank.ui.AppViewModelProvider
 import io.github.areswjd.piggybank.ui.common.AmountVisualTransformation
 import io.github.areswjd.piggybank.ui.common.ConfirmDialog
+import io.github.areswjd.piggybank.ui.common.SuffixTransformation
 import io.github.areswjd.piggybank.ui.common.assetLabel
 import io.github.areswjd.piggybank.ui.common.color
 import io.github.areswjd.piggybank.ui.common.label
+import io.github.areswjd.piggybank.ui.theme.PiggyTheme
 import io.github.areswjd.piggybank.util.formatFullDate
 import java.time.LocalDate
 
@@ -133,18 +139,22 @@ fun TransactionEditScreen(
                 onClick = { showDatePicker = true },
             )
 
-            OutlinedTextField(
-                value = form.amountText,
-                onValueChange = viewModel::onAmountChange,
-                modifier = Modifier.fillMaxWidth(),
-                label = { Text(stringResource(R.string.field_amount)) },
-                prefix = { Text(stringResource(R.string.won_symbol) + " ") },
-                textStyle = MaterialTheme.typography.titleLarge,
-                singleLine = true,
-                visualTransformation = AmountVisualTransformation,
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number, imeAction = ImeAction.Next),
-                shape = MaterialTheme.shapes.medium,
-            )
+            if (PiggyTheme.style.amountHero) {
+                HeroAmountField(form.amountText, viewModel::onAmountChange)
+            } else {
+                OutlinedTextField(
+                    value = form.amountText,
+                    onValueChange = viewModel::onAmountChange,
+                    modifier = Modifier.fillMaxWidth(),
+                    label = { Text(stringResource(R.string.field_amount)) },
+                    prefix = { Text(stringResource(R.string.won_symbol) + " ") },
+                    textStyle = MaterialTheme.typography.titleLarge,
+                    singleLine = true,
+                    visualTransformation = AmountVisualTransformation,
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number, imeAction = ImeAction.Next),
+                    shape = MaterialTheme.shapes.medium,
+                )
+            }
 
             val noAssets = tree?.isEmpty == true || tree?.groups?.all { it.assets.isEmpty() } == true
             if (form.type == TransactionType.TRANSFER) {
@@ -240,6 +250,44 @@ fun TransactionEditScreen(
 }
 
 private enum class AssetSlot { FROM, TO }
+
+/** 금액을 화면 가운데에 아주 크게 보여주는 입력칸 (B. 민트 사탕). */
+@Composable
+private fun HeroAmountField(value: String, onValueChange: (String) -> Unit) {
+    val won = stringResource(R.string.won_unit)
+    val textStyle = MaterialTheme.typography.displaySmall.copy(
+        color = MaterialTheme.colorScheme.onSurface,
+        textAlign = TextAlign.Center,
+    )
+    Column(
+        modifier = Modifier.fillMaxWidth().padding(vertical = 12.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+    ) {
+        Text(
+            stringResource(R.string.field_amount),
+            style = MaterialTheme.typography.labelLarge,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+        )
+        BasicTextField(
+            value = value,
+            onValueChange = onValueChange,
+            modifier = Modifier.fillMaxWidth(),
+            textStyle = textStyle,
+            singleLine = true,
+            visualTransformation = SuffixTransformation(AmountVisualTransformation, " $won"),
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number, imeAction = ImeAction.Next),
+            cursorBrush = SolidColor(MaterialTheme.colorScheme.primary),
+            decorationBox = { inner ->
+                Box(contentAlignment = Alignment.Center) {
+                    if (value.isEmpty()) {
+                        Text("0 $won", style = textStyle.copy(color = MaterialTheme.colorScheme.outline))
+                    }
+                    inner()
+                }
+            },
+        )
+    }
+}
 
 /** 상단의 [수입][지출][이체] 선택. 고른 유형의 색으로 칠한다. */
 @OptIn(ExperimentalMaterial3Api::class)

@@ -38,3 +38,20 @@ object AmountVisualTransformation : VisualTransformation {
         )
     }
 }
+
+/** [base]로 바꾼 글자 뒤에 [suffix](예: " 원")를 붙인다. 커서는 숫자 부분 안에서만 움직인다. */
+class SuffixTransformation(private val base: VisualTransformation, private val suffix: String) : VisualTransformation {
+    override fun filter(text: AnnotatedString): TransformedText {
+        if (text.isEmpty()) return base.filter(text)
+        val inner = base.filter(text)
+        val innerLength = inner.text.length
+        return TransformedText(
+            AnnotatedString(inner.text.text + suffix),
+            object : OffsetMapping {
+                override fun originalToTransformed(offset: Int) = inner.offsetMapping.originalToTransformed(offset)
+                override fun transformedToOriginal(offset: Int) =
+                    inner.offsetMapping.transformedToOriginal(offset.coerceAtMost(innerLength))
+            },
+        )
+    }
+}

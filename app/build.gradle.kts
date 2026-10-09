@@ -1,5 +1,4 @@
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
-import java.util.Properties
 
 plugins {
     alias(libs.plugins.android.application)
@@ -9,15 +8,12 @@ plugins {
     alias(libs.plugins.kotlin.serialization)
 }
 
-// 릴리스 서명 정보. 저장소에 올리지 않는 keystore.properties(또는 환경변수)에서 읽는다. docs/RELEASE.md 참고.
-val keystoreProperties = Properties().apply {
-    val file = rootProject.file("keystore.properties")
-    if (file.exists()) file.inputStream().use { load(it) }
-}
+// 서명 키는 CI(GitHub Actions)가 Secrets에서 꺼내 임시 파일로 넘겨준다. 저장소에는 키가 없다. docs/RELEASE.md 참고.
+val signingKeystorePath: String? = System.getenv("SIGNING_KEYSTORE_PATH")
+val signingKeystorePassword: String? = System.getenv("SIGNING_KEYSTORE_PASSWORD")
 
-fun signingValue(key: String, env: String): String? = keystoreProperties.getProperty(key) ?: System.getenv(env)
-
-val releaseStoreFile = signingValue("storeFile", "PIGGYBANK_KEYSTORE_FILE")
+// 빌드 번호. CI에서는 GitHub Actions 실행 번호라 빌드할 때마다 1씩 올라간다. 로컬 빌드는 1.
+val buildNumber: Int = System.getenv("GITHUB_RUN_NUMBER")?.toIntOrNull() ?: 1
 
 android {
     namespace = "io.github.areswjd.piggybank"
@@ -27,28 +23,32 @@ android {
         applicationId = "io.github.areswjd.piggybank"
         minSdk = 26
         targetSdk = 36
-        versionCode = 1
-        versionName = "1.0.0"
+        versionCode = buildNumber
+        versionName = "1.0"
+
+        // 앱 안 업데이트 확인에 쓰는 공개 저장소(GitHub 릴리스 dev-latest).
+        buildConfigField("String", "UPDATE_REPOSITORY", "\"Ares-wjd/piggy-bank\"")
+        // 업데이트 확인은 CI에서 고정 키로 서명한 빌드에서만 한다. 직접 빌드한 앱은 서명이 달라 업데이트를 설치할 수 없다.
+        buildConfigField("boolean", "UPDATE_CHECK_ENABLED", (signingKeystorePath != null).toString())
     }
 
     signingConfigs {
-        if (releaseStoreFile != null) {
-            create("release") {
-                storeFile = rootProject.file(releaseStoreFile)
-                storePassword = signingValue("storePassword", "PIGGYBANK_KEYSTORE_PASSWORD")
-                keyAlias = signingValue("keyAlias", "PIGGYBANK_KEY_ALIAS")
-                keyPassword = signingValue("keyPassword", "PIGGYBANK_KEY_PASSWORD")
+        signingKeystorePath?.let { path ->
+            create("shared") {
+                storeFile = file(path)
+                storePassword = signingKeystorePassword
+                keyAlias = System.getenv("SIGNING_KEY_ALIAS") ?: "piggybank"
+                keyPassword = signingKeystorePassword
             }
         }
     }
 
     buildTypes {
+        // 배포하는 것은 디버그 빌드다. 항상 같은 키(shared)로 서명해서 폰에서 덮어쓰기 업데이트가 된다.
         debug {
-            applicationIdSuffix = ".debug"
+            signingConfigs.findByName("shared")?.let { signingConfig = it }
         }
         release {
-            // 서명 정보가 없으면(CI 등) 서명하지 않은 APK를 만든다.
-            signingConfig = signingConfigs.findByName("release")
             isMinifyEnabled = true
             isShrinkResources = true
             proguardFiles(
@@ -65,6 +65,7 @@ android {
 
     buildFeatures {
         compose = true
+        buildConfig = true
     }
 
     testOptions {
