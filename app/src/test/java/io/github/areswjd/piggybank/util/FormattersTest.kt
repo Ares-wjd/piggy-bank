@@ -21,8 +21,8 @@ class FormattersTest {
 
     @Test
     fun dates() {
-        assertEquals("2026.10.09 (목)", formatFullDate(LocalDate.of(2026, 10, 9)))
-        assertEquals("10.09 (목)", formatShortDate(LocalDate.of(2026, 10, 9)))
+        assertEquals("2026.10.09 (금)", formatFullDate(LocalDate.of(2026, 10, 9)))
+        assertEquals("10.09 (금)", formatShortDate(LocalDate.of(2026, 10, 9)))
         assertEquals("2026년 10월", formatMonth(YearMonth.of(2026, 10)))
     }
 

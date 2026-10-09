@@ -19,10 +19,10 @@ fun formatMoney(amount: Long): String = moneyFormat.format(amount)
 /** 부호를 붙인다. 12000 → "+12,000", -500 → "-500", 0 → "0" */
 fun formatSignedMoney(amount: Long): String = if (amount > 0) "+${formatMoney(amount)}" else formatMoney(amount)
 
-/** "2026.10.09 (목)" */
+/** "2026.10.09 (금)" */
 fun formatFullDate(date: LocalDate): String = fullDateFormat.format(date)
 
-/** "10.09 (목)" */
+/** "10.09 (금)" */
 fun formatShortDate(date: LocalDate): String = shortDateFormat.format(date)
 
 /** "2026년 10월" */
