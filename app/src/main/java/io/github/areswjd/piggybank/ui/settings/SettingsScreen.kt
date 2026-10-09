@@ -94,7 +94,7 @@ fun SettingsScreen(
         ) {
             SettingsCard(title = stringResource(R.string.settings_account)) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
-                    PigMascot(Modifier.size(40.dp))
+                    PigMascot(40.dp)
                     Spacer(Modifier.width(12.dp))
                     Text(email.orEmpty(), style = MaterialTheme.typography.bodyLarge, modifier = Modifier.weight(1f))
                     TextButton(onClick = { confirmLogout = true }) { Text(stringResource(R.string.settings_logout)) }
