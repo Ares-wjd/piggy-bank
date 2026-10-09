@@ -1,15 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- 앱 아이콘 전경: 동전을 넣는 아기 돼지. 108dp 캔버스, 적응형 아이콘 안전 영역(가운데 66dp) 기준으로 축소 배치. -->
+<!-- 화면 안에서 쓰는 돼지 마스코트. 아이콘 전경과 같은 그림을 여백 없이 잘라 쓴다. -->
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
-    android:width="108dp"
-    android:height="108dp"
-    android:viewportWidth="108"
-    android:viewportHeight="108">
+    android:width="56dp"
+    android:height="56dp"
+    android:viewportWidth="56"
+    android:viewportHeight="56">
     <group
-        android:pivotX="54"
-        android:pivotY="54"
-        android:scaleX="0.92"
-        android:scaleY="0.92">
+        android:translateX="-26"
+        android:translateY="-24">
         <!-- 동전 -->
         <path
             android:fillColor="@color/coin"

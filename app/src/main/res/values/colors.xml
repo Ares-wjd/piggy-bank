@@ -1,7 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="ic_launcher_background">#FFE4EC</color>
-    <color name="ic_launcher_body">#EC6A97</color>
-    <color name="ic_launcher_accent">#B4235F</color>
-    <color name="ic_launcher_coin">#FFC107</color>
+    <!-- 앱 아이콘 / 마스코트 -->
+    <color name="ic_launcher_background">#FFF0DB</color>
+    <color name="pig_body">#FFB8CB</color>
+    <color name="pig_inner_ear">#FF94B2</color>
+    <color name="pig_line">#E07A98</color>
+    <color name="pig_snout">#FF9EB8</color>
+    <color name="pig_nostril">#C8577A</color>
+    <color name="pig_eye">#4A2A33</color>
+    <color name="pig_cheek">#FF7FA3</color>
+    <color name="coin">#FFC94D</color>
+    <color name="coin_line">#E8A92A</color>
 </resources>

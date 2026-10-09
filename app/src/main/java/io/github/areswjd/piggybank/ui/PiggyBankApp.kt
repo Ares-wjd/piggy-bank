@@ -5,9 +5,9 @@ import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.outlined.ReceiptLong
-import androidx.compose.material.icons.outlined.AccountBalanceWallet
-import androidx.compose.material.icons.outlined.Settings
+import androidx.compose.material.icons.automirrored.rounded.ReceiptLong
+import androidx.compose.material.icons.rounded.Savings
+import androidx.compose.material.icons.rounded.Settings
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
@@ -35,9 +35,9 @@ enum class TopLevelDestination(
     @StringRes val labelRes: Int,
     val icon: ImageVector,
 ) {
-    LEDGER("ledger", R.string.tab_ledger, Icons.AutoMirrored.Outlined.ReceiptLong),
-    ASSETS("assets", R.string.tab_assets, Icons.Outlined.AccountBalanceWallet),
-    SETTINGS("settings", R.string.tab_settings, Icons.Outlined.Settings),
+    LEDGER("ledger", R.string.tab_ledger, Icons.AutoMirrored.Rounded.ReceiptLong),
+    ASSETS("assets", R.string.tab_assets, Icons.Rounded.Savings),
+    SETTINGS("settings", R.string.tab_settings, Icons.Rounded.Settings),
 }
 
 @Composable

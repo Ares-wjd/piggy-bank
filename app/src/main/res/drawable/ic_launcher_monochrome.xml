@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 테마 아이콘(Android 13+)용 단색 실루엣. 눈·콧구멍·동전 구멍은 반대 방향으로 그려 구멍으로 남긴다. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <group
+        android:pivotX="54"
+        android:pivotY="54"
+        android:scaleX="0.92"
+        android:scaleY="0.92">
+        <path
+            android:fillColor="#FFFFFF"
+            android:pathData="M49,30a5,5 0,1 1,10 0a5,5 0,1 1,-10 0z" />
+        <path
+            android:fillColor="#FFFFFF"
+            android:pathData="M34,47C30,40 28,31 32,28C36,26 43,31 48,38ZM60,38C65,31 72,26 76,28C80,31 78,40 74,47ZM30,58a24,21 0,1 1,48 0a24,21 0,1 1,-48 0zM50,41v2.4h8v-2.4zM42.4,55a2.6,3 0,1 0,5.2 0a2.6,3 0,1 0,-5.2 0zM60.4,55a2.6,3 0,1 0,5.2 0a2.6,3 0,1 0,-5.2 0zM48.9,65a1.7,2.5 0,1 0,3.4 0a1.7,2.5 0,1 0,-3.4 0zM55.7,65a1.7,2.5 0,1 0,3.4 0a1.7,2.5 0,1 0,-3.4 0z" />
+    </group>
+</vector>

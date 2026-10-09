@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <style name="Theme.PiggyBank" parent="android:Theme.Material.NoActionBar">
-        <item name="android:windowBackground">#201A1B</item>
+        <item name="android:windowBackground">#1F1A1C</item>
     </style>
 </resources>

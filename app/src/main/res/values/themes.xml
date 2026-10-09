@@ -2,6 +2,6 @@
 <resources>
     <!-- 화면은 Compose 테마(PiggyBankTheme)가 그린다. 이 테마는 앱 시작 직후 창 배경용이다. -->
     <style name="Theme.PiggyBank" parent="android:Theme.Material.Light.NoActionBar">
-        <item name="android:windowBackground">#FFFBFF</item>
+        <item name="android:windowBackground">#FFF8F4</item>
     </style>
 </resources>

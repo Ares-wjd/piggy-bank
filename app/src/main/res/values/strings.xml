@@ -1,9 +1,9 @@
 <resources>
-    <string name="app_name">가계부</string>
+    <string name="app_name">Piggy bank</string>
 
     <string name="tab_ledger">가계부</string>
     <string name="tab_assets">자산</string>
     <string name="tab_settings">설정</string>
 
-    <string name="placeholder_coming_soon">준비 중입니다</string>
+    <string name="placeholder_coming_soon">준비 중이에요</string>
 </resources>
