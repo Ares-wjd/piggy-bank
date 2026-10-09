@@ -6,3 +6,7 @@
     public static int w(...);
     public static int e(...);
 }
+
+# SQLCipher: 네이티브 코드가 JNI로 찾는 클래스라 이름을 유지해야 한다.
+-keep,includedescriptorclasses class net.zetetic.database.** { *; }
+-keep,includedescriptorclasses interface net.zetetic.database.** { *; }
