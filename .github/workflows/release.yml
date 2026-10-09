@@ -1,0 +1,68 @@
+name: Release APK
+
+# GitHub에서 Release를 "발행(Publish)"하면 서명된 APK를 빌드해 그 릴리스에 piggybank.apk로 첨부한다.
+# 설치 링크: https://github.com/<저장소>/releases/latest/download/piggybank.apk
+on:
+  release:
+    types: [published]
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      TAG: ${{ github.event.release.tag_name }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - uses: gradle/actions/setup-gradle@v4
+
+      - name: Check tag matches app version
+        run: |
+          version=$(grep -oP 'versionName = "\K[^"]+' app/build.gradle.kts)
+          if [ "$TAG" != "v$version" ]; then
+            echo "::error::릴리스 태그($TAG)가 앱 버전(v$version)과 다릅니다. app/build.gradle.kts의 versionName을 먼저 올리고 태그를 v$version 으로 만드세요."
+            exit 1
+          fi
+
+      - name: Decode signing key
+        env:
+          KEYSTORE_BASE64: ${{ secrets.PIGGYBANK_KEYSTORE_BASE64 }}
+        run: |
+          if [ -z "$KEYSTORE_BASE64" ]; then
+            echo "::error::GitHub Secrets에 PIGGYBANK_KEYSTORE_BASE64가 없습니다. docs/RELEASE.md 참고."
+            exit 1
+          fi
+          echo "$KEYSTORE_BASE64" | base64 -d > "$RUNNER_TEMP/release.jks"
+
+      - name: Build signed release APK
+        env:
+          PIGGYBANK_KEYSTORE_FILE: ${{ runner.temp }}/release.jks
+          PIGGYBANK_KEYSTORE_PASSWORD: ${{ secrets.PIGGYBANK_KEYSTORE_PASSWORD }}
+          PIGGYBANK_KEY_ALIAS: ${{ secrets.PIGGYBANK_KEY_ALIAS }}
+          PIGGYBANK_KEY_PASSWORD: ${{ secrets.PIGGYBANK_KEY_PASSWORD }}
+        run: ./gradlew assembleRelease
+
+      - name: Attach APK to release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          apk=app/build/outputs/apk/release/app-release.apk
+          if [ ! -f "$apk" ]; then
+            echo "::error::서명된 APK가 만들어지지 않았습니다. 서명 Secrets를 확인하세요."
+            exit 1
+          fi
+          cp "$apk" piggybank.apk
+          gh release upload "$TAG" piggybank.apk --clobber --repo "$GITHUB_REPOSITORY"
+
+      - name: Remove signing key
+        if: always()
+        run: rm -f "$RUNNER_TEMP/release.jks"

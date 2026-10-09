@@ -11,6 +11,8 @@ import io.github.areswjd.piggybank.data.preferences.UserPreferences
 import io.github.areswjd.piggybank.data.repository.AssetRepository
 import io.github.areswjd.piggybank.data.repository.TransactionRepository
 import io.github.areswjd.piggybank.data.session.SessionRepository
+import io.github.areswjd.piggybank.data.update.GitHubReleaseClient
+import io.github.areswjd.piggybank.data.update.UpdateManager
 
 /** 앱 전체에서 함께 쓰는 객체. DB는 처음 쓸 때 연다. */
 class AppContainer(context: Context) {
@@ -31,4 +33,14 @@ class AppContainer(context: Context) {
         BackupManager(appContext, LocalBackupStore(database), driveAuth, DriveClient(), preferences)
     }
     val session: SessionRepository by lazy { SessionRepository(preferences, assetRepository, backupManager) }
+
+    val updateManager: UpdateManager by lazy {
+        UpdateManager(
+            appContext,
+            GitHubReleaseClient(BuildConfig.UPDATE_REPOSITORY),
+            currentVersion = BuildConfig.VERSION_NAME,
+            currentVersionCode = BuildConfig.VERSION_CODE.toLong(),
+            enabled = BuildConfig.UPDATE_CHECK_ENABLED,
+        )
+    }
 }

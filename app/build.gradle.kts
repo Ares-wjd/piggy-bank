@@ -27,8 +27,12 @@ android {
         applicationId = "io.github.areswjd.piggybank"
         minSdk = 26
         targetSdk = 36
+        // 새 버전을 낼 때 versionCode를 1 올리고 versionName을 바꾼다. 릴리스 태그는 "v" + versionName. docs/RELEASE.md 참고.
         versionCode = 1
         versionName = "1.0.0"
+
+        // 앱 안 업데이트 확인에 쓰는 공개 저장소(GitHub Releases).
+        buildConfigField("String", "UPDATE_REPOSITORY", "\"Ares-wjd/piggy-bank\"")
     }
 
     signingConfigs {
@@ -45,10 +49,13 @@ android {
     buildTypes {
         debug {
             applicationIdSuffix = ".debug"
+            // 디버그 빌드는 패키지 이름과 서명이 달라 릴리스로 업데이트할 수 없으므로 확인하지 않는다.
+            buildConfigField("boolean", "UPDATE_CHECK_ENABLED", "false")
         }
         release {
             // 서명 정보가 없으면(CI 등) 서명하지 않은 APK를 만든다.
             signingConfig = signingConfigs.findByName("release")
+            buildConfigField("boolean", "UPDATE_CHECK_ENABLED", "true")
             isMinifyEnabled = true
             isShrinkResources = true
             proguardFiles(
@@ -65,6 +72,7 @@ android {
 
     buildFeatures {
         compose = true
+        buildConfig = true
     }
 
     testOptions {

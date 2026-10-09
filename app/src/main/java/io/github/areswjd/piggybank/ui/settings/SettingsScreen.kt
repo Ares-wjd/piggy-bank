@@ -134,6 +134,13 @@ fun SettingsScreen(viewModel: SettingsViewModel = viewModel(factory = AppViewMod
                     modifier = Modifier.padding(vertical = 8.dp),
                     color = MaterialTheme.colorScheme.outlineVariant,
                 )
+                TextButton(
+                    onClick = viewModel::checkForUpdate,
+                    enabled = !viewModel.busy,
+                    modifier = Modifier.fillMaxWidth(),
+                ) {
+                    Text(stringResource(R.string.settings_check_update), modifier = Modifier.fillMaxWidth())
+                }
                 TextButton(onClick = { showLicenses = true }, modifier = Modifier.fillMaxWidth()) {
                     Text(stringResource(R.string.settings_licenses), modifier = Modifier.fillMaxWidth())
                 }

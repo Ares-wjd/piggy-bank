@@ -125,6 +125,24 @@
     <string name="settings_reauth_needed">구글 드라이브 권한이 필요해요. 다시 로그인해 주세요</string>
     <string name="settings_app_info">앱 정보</string>
     <string name="settings_version">버전</string>
+    <string name="settings_check_update">업데이트 확인</string>
+    <string name="settings_up_to_date">최신 버전이에요</string>
+    <string name="settings_update_check_failed">업데이트를 확인하지 못했어요. 인터넷 연결을 확인해 주세요</string>
+    <string name="settings_update_disabled">개발용 빌드에서는 업데이트를 확인하지 않아요</string>
     <string name="settings_licenses">오픈소스 라이선스</string>
     <string name="settings_licenses_body">Jua 폰트 — SIL Open Font License 1.1\nCopyright 2018 The Jua Project Authors</string>
+
+    <!-- 앱 업데이트 -->
+    <string name="update_available_title">새 버전 %1$s이 나왔어요</string>
+    <string name="update_available_message">업데이트해도 기록은 그대로 남아요.</string>
+    <string name="update_now">업데이트</string>
+    <string name="update_later">나중에</string>
+    <string name="update_downloading">새 버전을 받는 중이에요</string>
+    <string name="update_failed_title">업데이트를 받지 못했어요</string>
+    <string name="update_failed_message">인터넷 연결을 확인하고 다시 시도해 주세요.</string>
+    <string name="update_retry">다시 시도</string>
+    <string name="update_close">닫기</string>
+    <string name="update_permission_title">설치 권한이 필요해요</string>
+    <string name="update_permission_message">설정 화면에서 \'이 출처 허용\'을 켜고 돌아오면 설치가 이어져요. 처음 한 번만 하면 돼요.</string>
+    <string name="update_open_settings">설정 열기</string>
 </resources>

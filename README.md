@@ -6,13 +6,16 @@
 
 - 기능 명세: [docs/SPEC.md](docs/SPEC.md)
 - Google Cloud 설정(로그인·드라이브 백업): [docs/GOOGLE_CLOUD_SETUP.md](docs/GOOGLE_CLOUD_SETUP.md)
-- 릴리스 APK 만들기와 배포: [docs/RELEASE.md](docs/RELEASE.md)
+- 배포(설치 링크·앱 안 업데이트): [docs/RELEASE.md](docs/RELEASE.md)
+
+**설치 링크** (항상 최신 버전): https://github.com/Ares-wjd/piggy-bank/releases/latest/download/piggybank.apk
 
 ## 주요 기능
 
 - **가계부**: 월별 수입·지출·이체 기록, 한 줄 월 요약(숨기기 가능), 날짜별 묶음
 - **자산**: 자산 그룹 > 세부 자산 2단계, 거래에 따라 잔액 자동 계산, 잔액 0원일 때만 삭제(기록은 유지)
-- **설정**: 구글 계정 로그인(필수), 구글 드라이브 백업·복원, 자동 백업
+- **설정**: 구글 계정 로그인(필수), 구글 드라이브 백업·복원, 자동 백업, 업데이트 확인
+- **업데이트**: 앱을 켤 때 GitHub Releases에서 새 버전을 확인하고, 앱 안에서 내려받아 설치
 - **보안**: 기기 DB 암호화(SQLCipher + Android Keystore), 드라이브 앱 전용 폴더만 사용, 안드로이드 자동 백업 차단
 
 ## 기술 스택
@@ -36,7 +39,7 @@ JDK 17 이상이 필요하다.
 
 ## CI
 
-푸시할 때마다 GitHub Actions가 빌드, 단위 테스트, lint, 릴리스(R8) 빌드를 실행한다. 빌드된 디버그 APK는 Actions 실행 화면의 **Artifacts**에서 받을 수 있다. 단, CI의 디버그 APK는 임시 키로 서명되어 구글 로그인이 되지 않는다.
+푸시할 때마다 GitHub Actions가 빌드, 단위 테스트, lint, 릴리스(R8) 빌드를 실행한다. GitHub에서 Release를 발행하면 서명된 APK를 빌드해 릴리스에 첨부한다(`release.yml`). 빌드된 디버그 APK는 Actions 실행 화면의 **Artifacts**에서 받을 수 있다. 단, CI의 디버그 APK는 임시 키로 서명되어 구글 로그인이 되지 않는다.
 
 ## 라이선스 고지
 

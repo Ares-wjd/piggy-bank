@@ -13,6 +13,7 @@ import io.github.areswjd.piggybank.ui.ledger.LedgerViewModel
 import io.github.areswjd.piggybank.ui.session.SessionViewModel
 import io.github.areswjd.piggybank.ui.settings.SettingsViewModel
 import io.github.areswjd.piggybank.ui.transaction.TransactionEditViewModel
+import io.github.areswjd.piggybank.ui.update.UpdateViewModel
 
 /** 모든 화면의 ViewModel을 [AppContainer]의 객체로 만든다. */
 object AppViewModelProvider {
@@ -31,7 +32,10 @@ object AppViewModelProvider {
         initializer {
             AssetDetailViewModel(createSavedStateHandle(), container().assetRepository, container().transactionRepository)
         }
-        initializer { SettingsViewModel(container().session, container().backupManager, container().preferences) }
+        initializer {
+            SettingsViewModel(container().session, container().backupManager, container().updateManager, container().preferences)
+        }
+        initializer { UpdateViewModel(container().updateManager) }
     }
 }
 
