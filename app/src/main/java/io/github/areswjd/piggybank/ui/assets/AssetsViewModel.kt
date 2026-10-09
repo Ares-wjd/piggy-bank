@@ -20,17 +20,17 @@ class AssetsViewModel(private val assetRepository: AssetRepository) : ViewModel(
     val tree: StateFlow<AssetTree?> =
         assetRepository.observeAssetTree().stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), null)
 
-    fun addGroup(name: String, onResult: ResultCallback) = run(onResult) { assetRepository.addGroup(name) }
+    fun addGroup(name: String, onResult: ResultCallback) = launchWithResult(onResult) { assetRepository.addGroup(name) }
 
     fun renameGroup(id: Long, name: String, onResult: ResultCallback) =
-        run(onResult) { assetRepository.renameGroup(id, name) }
+        launchWithResult(onResult) { assetRepository.renameGroup(id, name) }
 
-    fun deleteGroup(id: Long, onResult: ResultCallback) = run(onResult) { assetRepository.deleteGroup(id) }
+    fun deleteGroup(id: Long, onResult: ResultCallback) = launchWithResult(onResult) { assetRepository.deleteGroup(id) }
 
     fun addAsset(groupId: Long, name: String, initialBalance: Long, onResult: ResultCallback) =
-        run(onResult) { assetRepository.addAsset(groupId, name, initialBalance) }
+        launchWithResult(onResult) { assetRepository.addAsset(groupId, name, initialBalance) }
 
-    private fun run(onResult: ResultCallback, block: suspend () -> Unit) {
+    private fun launchWithResult(onResult: ResultCallback, block: suspend () -> Unit) {
         viewModelScope.launch {
             onResult(runCatching { block() }.exceptionOrNull()?.messageRes())
         }

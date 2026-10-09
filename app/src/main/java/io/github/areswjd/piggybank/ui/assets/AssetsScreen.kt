@@ -86,10 +86,18 @@ fun AssetsScreen(
     }
 
     // 팝업 안 입력 작업: 실패하면 팝업에 오류를 띄우고, 성공하면 닫는다.
-    val formResult: (Int?) -> Unit = { error -> if (error == null) close() else dialogError = error }
+    val formResult: (Int?) -> Unit = { error ->
+        if (error == null) {
+            close()
+        } else {
+            dialogError = error
+        }
+    }
     // 확인 팝업 작업: 팝업은 바로 닫고, 실패하면 아래 안내줄로 알린다.
     val snackbarResult: (Int?) -> Unit = { error ->
-        if (error != null) scope.launch { snackbarHostState.showSnackbar(context.getString(error)) }
+        if (error != null) {
+            scope.launch { snackbarHostState.showSnackbar(context.getString(error)) }
+        }
     }
 
     Scaffold(

@@ -29,7 +29,16 @@ jobs:
       - uses: gradle/actions/setup-gradle@v4
 
       - name: Build, unit test, lint, release (R8) build
-        run: ./gradlew assembleDebug testDebugUnitTest lintDebug assembleRelease --stacktrace
+        shell: bash
+        run: |
+          set -o pipefail
+          ./gradlew assembleDebug testDebugUnitTest lintDebug assembleRelease --continue 2>&1 | tee build.log
+
+      # 실패했을 때 긴 로그 대신 오류 줄만 모아서 보여준다.
+      - name: Show errors
+        if: failure()
+        run: |
+          grep -E "^e: |FAILED|^\s+(java|org)\.\S+(Error|Exception)|error:|Errors found" build.log | head -150 || true
 
       - name: Upload debug APK
         uses: actions/upload-artifact@v4
