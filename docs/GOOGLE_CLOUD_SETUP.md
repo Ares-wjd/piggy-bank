@@ -32,37 +32,27 @@ Piggy bank는 사용자 **본인의** 구글 계정으로 로그인하고, 그 �
 
 **API 및 서비스 → 사용자 인증 정보 → 사용자 인증 정보 만들기 → OAuth 클라이언트 ID** (새 콘솔: **Google 인증 플랫폼 → 클라이언트 → 클라이언트 만들기**)
 
-빌드 종류마다 하나씩, 두 개를 만든다.
+| 항목 | 값 |
+|---|---|
+| 애플리케이션 유형 | Android |
+| 패키지 이름 | `io.github.areswjd.piggybank` |
+| SHA-1 인증서 디지털 지문 | 고정 서명 키(`piggybank.jks`)의 SHA-1 |
 
-| 용도 | 애플리케이션 유형 | 패키지 이름 | SHA-1 |
-|---|---|---|---|
-| 배포용(릴리스) | Android | `io.github.areswjd.piggybank` | 릴리스 서명 키의 SHA-1 |
-| 개발용(디버그) | Android | `io.github.areswjd.piggybank.debug` | 내 PC 디버그 키의 SHA-1 |
+배포되는 앱은 모두 이 키로 서명되므로 클라이언트는 **하나**면 된다.
 
 ### SHA-1 확인 방법
 
-릴리스 키 (만드는 방법은 [RELEASE.md](RELEASE.md)):
+서명 키를 만드는 방법은 [RELEASE.md](RELEASE.md)에 있다. 키 파일이 있는 폴더에서 다음을 실행한다.
 
 ```bash
-keytool -list -v -keystore piggybank-release.jks -alias piggybank
+keytool -list -v -keystore piggybank.jks -alias piggybank
 ```
-
-디버그 키 (Android Studio가 자동으로 만든 키):
-
-```bash
-# macOS / Linux
-keytool -list -v -keystore ~/.android/debug.keystore -alias androiddebugkey -storepass android -keypass android
-# Windows
-keytool -list -v -keystore "%USERPROFILE%\.android\debug.keystore" -alias androiddebugkey -storepass android -keypass android
-```
-
-또는 프로젝트 폴더에서 `./gradlew signingReport` 를 실행하면 두 키의 SHA-1이 모두 나온다.
 
 출력의 `SHA1: AA:BB:...` 값을 그대로 붙여 넣는다.
 
 ## 5. 확인
 
-1. 휴대폰에 앱을 설치하고 **Google 계정으로 시작하기**
+1. 휴대폰에 앱을 설치하고(설치 링크: [RELEASE.md](RELEASE.md)) **Google 계정으로 시작하기**
 2. 계정 선택 → 드라이브 권한 허용 → 가계부 화면이 열리면 성공
 3. 설정 탭 → **지금 백업** → "백업했어요"가 나오면 드라이브 연결 성공
 
@@ -70,8 +60,8 @@ keytool -list -v -keystore "%USERPROFILE%\.android\debug.keystore" -alias androi
 
 | 증상 | 원인 / 해결 |
 |---|---|
-| 계정을 고른 뒤 "로그인하지 못했어요" | 패키지 이름이나 SHA-1이 등록한 값과 다르다. 특히 디버그/릴리스를 섞지 않았는지 확인. 등록 후 반영까지 몇 분 걸릴 수 있다. |
+| 계정을 고른 뒤 "로그인하지 못했어요" | 패키지 이름이나 SHA-1이 등록한 값과 다르다. 등록 후 반영까지 몇 분 걸릴 수 있다. |
 | 개발자 계정만 로그인되고 다른 계정은 안 됨 | OAuth 동의 화면이 아직 "테스트" 상태다. 3-5번 참고. |
-| GitHub Actions에서 받은 디버그 APK로 로그인 안 됨 | CI는 매번 다른 임시 디버그 키로 서명한다. 로그인은 직접 빌드한 APK나 릴리스 APK로 확인한다. |
+| Android Studio에서 직접 빌드한 앱으로 로그인 안 됨 | 내 PC의 디버그 키로 서명돼 SHA-1이 다르다. 로그인은 설치 링크로 받은 앱으로 확인한다. |
 | "Google Drive API has not been used..." 오류로 백업 실패 | 2번(Drive API 사용 설정)을 하지 않았다. |
 | 휴대폰에 Google Play 서비스가 없음 | Google 로그인을 쓸 수 없다(일부 중국 판매 기기 등). |

@@ -16,10 +16,14 @@ class UpdateViewModel(val manager: UpdateManager) : ViewModel() {
     fun checkOnLaunch() {
         if (checkedOnLaunch) return
         checkedOnLaunch = true
-        viewModelScope.launch { manager.check() }
+        viewModelScope.launch { manager.check(manual = false) }
     }
 
     fun dismiss() = manager.dismiss()
+
+    fun skip() {
+        viewModelScope.launch { manager.skip() }
+    }
 
     fun download() {
         viewModelScope.launch { manager.download() }

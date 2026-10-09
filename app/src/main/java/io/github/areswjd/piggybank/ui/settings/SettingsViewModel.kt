@@ -14,6 +14,7 @@ import io.github.areswjd.piggybank.data.preferences.UserPreferences
 import io.github.areswjd.piggybank.data.session.SessionRepository
 import io.github.areswjd.piggybank.data.update.CheckResult
 import io.github.areswjd.piggybank.data.update.UpdateManager
+import io.github.areswjd.piggybank.model.AppDesign
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharingStarted
@@ -26,11 +27,14 @@ class SettingsViewModel(
     private val session: SessionRepository,
     private val backupManager: BackupManager,
     private val updateManager: UpdateManager,
-    preferences: UserPreferences,
+    private val preferences: UserPreferences,
 ) : ViewModel() {
 
     val email: StateFlow<String?> =
         preferences.accountEmail.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), null)
+
+    val design: StateFlow<AppDesign> =
+        preferences.appDesign.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), AppDesign.DEFAULT)
 
     val backupStatus: StateFlow<BackupStatus?> =
         preferences.backupStatus.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), null)
@@ -53,13 +57,17 @@ class SettingsViewModel(
 
     /** 새 버전이 있으면 앱 최상단의 업데이트 팝업이 뜬다. 그 밖의 결과만 안내줄로 알린다. */
     fun checkForUpdate() = runBusy {
-        val res = when (updateManager.check()) {
+        val res = when (updateManager.check(manual = true)) {
             CheckResult.AVAILABLE -> return@runBusy
             CheckResult.UP_TO_DATE -> R.string.settings_up_to_date
             CheckResult.FAILED -> R.string.settings_update_check_failed
             CheckResult.DISABLED -> R.string.settings_update_disabled
         }
         _messages.send(res)
+    }
+
+    fun setDesign(design: AppDesign) {
+        viewModelScope.launch { preferences.setAppDesign(design) }
     }
 
     fun logout() {

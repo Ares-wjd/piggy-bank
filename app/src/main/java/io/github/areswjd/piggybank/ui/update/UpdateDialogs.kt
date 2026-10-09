@@ -7,6 +7,7 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.rememberScrollState
@@ -37,7 +38,12 @@ fun UpdateDialogs(viewModel: UpdateViewModel) {
     val state by viewModel.state.collectAsStateWithLifecycle()
     when (val s = state) {
         UpdateState.Idle -> Unit
-        is UpdateState.Available -> AvailableDialog(s, onUpdate = viewModel::download, onLater = viewModel::dismiss)
+        is UpdateState.Available -> AvailableDialog(
+            s,
+            onUpdate = viewModel::download,
+            onSkip = viewModel::skip,
+            onLater = viewModel::dismiss,
+        )
         is UpdateState.Downloading -> DownloadingDialog(s.progress)
         is UpdateState.ReadyToInstall -> InstallStep(s, viewModel)
         is UpdateState.Failed -> AlertDialog(
@@ -51,10 +57,15 @@ fun UpdateDialogs(viewModel: UpdateViewModel) {
 }
 
 @Composable
-private fun AvailableDialog(state: UpdateState.Available, onUpdate: () -> Unit, onLater: () -> Unit) {
+private fun AvailableDialog(
+    state: UpdateState.Available,
+    onUpdate: () -> Unit,
+    onSkip: () -> Unit,
+    onLater: () -> Unit,
+) {
     AlertDialog(
         onDismissRequest = onLater,
-        title = { Text(stringResource(R.string.update_available_title, state.release.version)) },
+        title = { Text(stringResource(R.string.update_available_title, state.release.versionCode)) },
         text = {
             Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                 if (state.release.notes.isNotEmpty()) {
@@ -72,7 +83,12 @@ private fun AvailableDialog(state: UpdateState.Available, onUpdate: () -> Unit, 
             }
         },
         confirmButton = { TextButton(onClick = onUpdate) { Text(stringResource(R.string.update_now)) } },
-        dismissButton = { TextButton(onClick = onLater) { Text(stringResource(R.string.update_later)) } },
+        dismissButton = {
+            Row {
+                TextButton(onClick = onSkip) { Text(stringResource(R.string.update_skip)) }
+                TextButton(onClick = onLater) { Text(stringResource(R.string.update_later)) }
+            }
+        },
     )
 }
 

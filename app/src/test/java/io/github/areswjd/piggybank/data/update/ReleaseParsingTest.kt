@@ -1,58 +1,50 @@
 package io.github.areswjd.piggybank.data.update
 
 import org.junit.Assert.assertEquals
-import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNull
-import org.junit.Assert.assertTrue
 import org.junit.Test
 
 class ReleaseParsingTest {
 
-    @Test
-    fun newerVersion_comparesNumerically() {
-        assertTrue(isNewerVersion("1.0.1", "1.0.0"))
-        assertTrue(isNewerVersion("v1.2.10", "1.2.9"))
-        assertTrue(isNewerVersion("2.0", "1.9.9"))
-        assertTrue(isNewerVersion("1.0.0.1", "1.0.0"))
-        assertFalse(isNewerVersion("1.0.0", "1.0.0"))
-        assertFalse(isNewerVersion("v1.0", "1.0.0"))
-        assertFalse(isNewerVersion("0.9.9", "1.0.0"))
-        assertFalse(isNewerVersion("1.0.0-beta", "1.0.0"))
-    }
-
     private fun release(
-        tag: String = "v1.0.1",
-        assetName: String = RELEASE_APK_NAME,
+        body: String = "versionCode: 57\\n화면 디자인 선택 추가\\n\\n- 버그 수정",
+        assetName: String = "piggybank.apk",
         draft: Boolean = false,
-        prerelease: Boolean = false,
     ) = """
         {
-          "tag_name": "$tag",
-          "name": "Piggy bank $tag",
+          "tag_name": "dev-latest",
+          "name": "개발 버전 (빌드 #57)",
           "draft": $draft,
-          "prerelease": $prerelease,
-          "body": "  - 버그 수정\n",
+          "prerelease": true,
+          "body": "$body",
           "assets": [
             {"name": "$assetName", "size": 1234,
-             "browser_download_url": "https://github.com/o/r/releases/download/$tag/$assetName"}
+             "browser_download_url": "https://github.com/o/r/releases/download/dev-latest/$assetName"}
           ],
-          "author": {"login": "someone"}
+          "author": {"login": "github-actions[bot]"}
         }
     """.trimIndent()
 
     @Test
-    fun parsesReleaseWithApk() {
-        val parsed = parseLatestRelease(release())!!
-        assertEquals("1.0.1", parsed.version)
-        assertEquals("- 버그 수정", parsed.notes)
+    fun parsesVersionCodeNotesAndApk() {
+        val parsed = parseDevRelease(release())!!
+        assertEquals(57L, parsed.versionCode)
+        assertEquals("화면 디자인 선택 추가\n\n- 버그 수정", parsed.notes)
         assertEquals(1234L, parsed.apkSize)
-        assertEquals("https://github.com/o/r/releases/download/v1.0.1/piggybank.apk", parsed.apkUrl)
+        assertEquals("https://github.com/o/r/releases/download/dev-latest/piggybank.apk", parsed.apkUrl)
     }
 
     @Test
-    fun ignoresReleaseWithoutApkOrNotFinal() {
-        assertNull(parseLatestRelease(release(assetName = "other.zip")))
-        assertNull(parseLatestRelease(release(draft = true)))
-        assertNull(parseLatestRelease(release(prerelease = true)))
+    fun acceptsWindowsLineEndingsAndNoNotes() {
+        assertEquals(8L, parseDevRelease(release(body = "versionCode: 8\\r\\n"))!!.versionCode)
+        assertEquals("", parseDevRelease(release(body = "versionCode: 8"))!!.notes)
+    }
+
+    @Test
+    fun ignoresReleaseWithoutVersionCodeOrApk() {
+        assertNull(parseDevRelease(release(body = "그냥 설명")))
+        assertNull(parseDevRelease(release(body = "변경\\nversionCode: 3")))
+        assertNull(parseDevRelease(release(assetName = "notes.txt")))
+        assertNull(parseDevRelease(release(draft = true)))
     }
 }

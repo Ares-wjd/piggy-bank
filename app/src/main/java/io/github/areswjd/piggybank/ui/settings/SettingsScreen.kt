@@ -1,6 +1,5 @@
 package io.github.areswjd.piggybank.ui.settings
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
@@ -17,8 +16,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.CloudDownload
 import androidx.compose.material.icons.rounded.CloudUpload
 import androidx.compose.material3.Button
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
@@ -41,15 +38,17 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
+import io.github.areswjd.piggybank.BuildConfig
 import io.github.areswjd.piggybank.R
 import io.github.areswjd.piggybank.data.preferences.BackupStatus
 import io.github.areswjd.piggybank.ui.AppViewModelProvider
 import io.github.areswjd.piggybank.ui.common.ConfirmDialog
+import io.github.areswjd.piggybank.ui.common.PigMascot
+import io.github.areswjd.piggybank.ui.common.PiggyCard
 import io.github.areswjd.piggybank.util.formatDateTime
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -57,6 +56,7 @@ import io.github.areswjd.piggybank.util.formatDateTime
 fun SettingsScreen(viewModel: SettingsViewModel = viewModel(factory = AppViewModelProvider.Factory)) {
     val email by viewModel.email.collectAsStateWithLifecycle()
     val backupStatus by viewModel.backupStatus.collectAsStateWithLifecycle()
+    val design by viewModel.design.collectAsStateWithLifecycle()
     val snackbarHostState = remember { SnackbarHostState() }
     val context = LocalContext.current
 
@@ -81,11 +81,15 @@ fun SettingsScreen(viewModel: SettingsViewModel = viewModel(factory = AppViewMod
         ) {
             SettingsCard(title = stringResource(R.string.settings_account)) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
-                    Image(painterResource(R.drawable.pig_mascot), contentDescription = null, modifier = Modifier.size(40.dp))
+                    PigMascot(Modifier.size(40.dp))
                     Spacer(Modifier.width(12.dp))
                     Text(email.orEmpty(), style = MaterialTheme.typography.bodyLarge, modifier = Modifier.weight(1f))
                     TextButton(onClick = { confirmLogout = true }) { Text(stringResource(R.string.settings_logout)) }
                 }
+            }
+
+            SettingsCard(title = stringResource(R.string.settings_design)) {
+                DesignPicker(selected = design, onSelect = viewModel::setDesign)
             }
 
             SettingsCard(title = stringResource(R.string.settings_backup)) {
@@ -186,12 +190,7 @@ fun SettingsScreen(viewModel: SettingsViewModel = viewModel(factory = AppViewMod
 
 @Composable
 private fun SettingsCard(title: String, content: @Composable ColumnScope.() -> Unit) {
-    Card(
-        modifier = Modifier.fillMaxWidth(),
-        shape = MaterialTheme.shapes.large,
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainerLowest),
-        elevation = CardDefaults.cardElevation(defaultElevation = 1.dp),
-    ) {
+    PiggyCard {
         Column(modifier = Modifier.padding(16.dp)) {
             Text(title, style = MaterialTheme.typography.titleMedium, color = MaterialTheme.colorScheme.primary)
             Spacer(Modifier.height(12.dp))
@@ -218,10 +217,7 @@ private fun BackupStatusText(status: BackupStatus?) {
     }
 }
 
+/** "1.0 (빌드 57)" */
 @Composable
-private fun appVersion(): String {
-    val context = LocalContext.current
-    return remember {
-        runCatching { context.packageManager.getPackageInfo(context.packageName, 0).versionName }.getOrNull().orEmpty()
-    }
-}
+private fun appVersion(): String =
+    stringResource(R.string.settings_version_format, BuildConfig.VERSION_NAME, BuildConfig.VERSION_CODE)

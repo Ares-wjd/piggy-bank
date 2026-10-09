@@ -4,10 +4,12 @@ import android.content.Context
 import android.content.Intent
 import androidx.core.content.FileProvider
 import androidx.core.content.pm.PackageInfoCompat
+import io.github.areswjd.piggybank.data.preferences.UserPreferences
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.first
 import java.io.File
 import java.io.IOException
 
@@ -28,9 +30,9 @@ enum class CheckResult { UP_TO_DATE, AVAILABLE, FAILED, DISABLED }
 class UpdateManager(
     context: Context,
     private val client: GitHubReleaseClient,
-    private val currentVersion: String,
+    private val preferences: UserPreferences,
     private val currentVersionCode: Long,
-    /** 개발용(디버그) 빌드에서는 끈다 — 패키지 이름과 서명이 달라 릴리스로 업데이트할 수 없다. */
+    /** CI에서 고정 키로 서명한 빌드에서만 켠다. 직접 빌드한 앱은 서명이 달라 업데이트를 설치할 수 없다. */
     val enabled: Boolean,
 ) {
     private val appContext = context.applicationContext
@@ -39,18 +41,30 @@ class UpdateManager(
     private val _state = MutableStateFlow<UpdateState>(UpdateState.Idle)
     val state: StateFlow<UpdateState> = _state.asStateFlow()
 
-    suspend fun check(): CheckResult {
+    /**
+     * 새 빌드가 있는지 확인한다. 자동 확인([manual] = false)에서는 "이 버전 건너뛰기"로 넘긴 빌드를 다시 묻지 않는다.
+     * 설정의 업데이트 확인 버튼([manual] = true)은 건너뛴 빌드도 보여준다.
+     */
+    suspend fun check(manual: Boolean): CheckResult {
         if (!enabled) return CheckResult.DISABLED
         val release = try {
-            client.latest()
+            client.devLatest()
         } catch (e: CancellationException) {
             throw e
         } catch (e: Exception) {
             return CheckResult.FAILED
         }
-        if (release == null || !isNewerVersion(release.version, currentVersion)) return CheckResult.UP_TO_DATE
+        if (release == null || release.versionCode <= currentVersionCode) return CheckResult.UP_TO_DATE
+        if (!manual && preferences.skippedVersionCode.first() == release.versionCode) return CheckResult.UP_TO_DATE
         if (_state.value !is UpdateState.Downloading) _state.value = UpdateState.Available(release)
         return CheckResult.AVAILABLE
+    }
+
+    /** 지금 보여준 빌드를 건너뛴다. 더 새 빌드가 나오면 다시 묻는다. */
+    suspend fun skip() {
+        val release = (_state.value as? UpdateState.Available)?.release ?: return
+        preferences.setSkippedVersionCode(release.versionCode)
+        _state.value = UpdateState.Idle
     }
 
     fun dismiss() {
@@ -67,7 +81,7 @@ class UpdateManager(
         try {
             updatesDir.deleteRecursively()
             updatesDir.mkdirs()
-            val apk = File(updatesDir, RELEASE_APK_NAME)
+            val apk = File(updatesDir, "update.apk")
             client.download(release.apkUrl, apk) { _state.value = UpdateState.Downloading(release, it) }
             verify(release, apk)
             _state.value = UpdateState.ReadyToInstall(release, apk)

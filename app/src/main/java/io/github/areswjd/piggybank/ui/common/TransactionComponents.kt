@@ -1,6 +1,7 @@
 package io.github.areswjd.piggybank.ui.common
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -12,12 +13,11 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.ArrowDownward
 import androidx.compose.material.icons.rounded.ArrowUpward
 import androidx.compose.material.icons.rounded.SwapHoriz
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -34,6 +34,7 @@ import androidx.compose.ui.unit.dp
 import io.github.areswjd.piggybank.R
 import io.github.areswjd.piggybank.data.local.dao.TransactionDetail
 import io.github.areswjd.piggybank.model.TransactionType
+import io.github.areswjd.piggybank.ui.theme.BadgeStyle
 import io.github.areswjd.piggybank.ui.theme.PiggyTheme
 import io.github.areswjd.piggybank.util.formatMoney
 import io.github.areswjd.piggybank.util.formatShortDate
@@ -106,19 +107,37 @@ private fun TransactionDetail.assetText(): String {
     return "$fromShort → $toShort"
 }
 
+/** 거래 유형 표시. 화면 디자인에 따라 동그라미·둥근 네모 안 화살표, 또는 도장 글자(수/지/이). */
 @Composable
 fun TypeBadge(type: TransactionType, modifier: Modifier = Modifier) {
     val color = type.color()
-    Box(
-        modifier = modifier
-            .size(36.dp)
-            .clip(CircleShape)
-            .background(color.copy(alpha = 0.15f)),
-        contentAlignment = Alignment.Center,
-    ) {
-        Icon(type.icon(), contentDescription = type.label(), tint = color, modifier = Modifier.size(20.dp))
+    when (PiggyTheme.style.badge) {
+        BadgeStyle.STAMP -> Box(
+            modifier = modifier
+                .size(36.dp)
+                .border(2.dp, color, CircleShape),
+            contentAlignment = Alignment.Center,
+        ) {
+            Text(type.stampLetter(), style = MaterialTheme.typography.titleSmall, color = color)
+        }
+        BadgeStyle.CIRCLE_ICON, BadgeStyle.ROUNDED_ICON -> {
+            val shape = if (PiggyTheme.style.badge == BadgeStyle.CIRCLE_ICON) CircleShape else RoundedCornerShape(12.dp)
+            Box(
+                modifier = modifier
+                    .size(38.dp)
+                    .clip(shape)
+                    .background(color.copy(alpha = 0.15f)),
+                contentAlignment = Alignment.Center,
+            ) {
+                Icon(type.icon(), contentDescription = type.label(), tint = color, modifier = Modifier.size(20.dp))
+            }
+        }
     }
 }
+
+/** 도장에 쓰는 한 글자: 수입 → 수, 지출 → 지, 이체 → 이. */
+@Composable
+private fun TransactionType.stampLetter(): String = label().take(1)
 
 /**
  * 거래 한 줄. [perspectiveAssetId]를 주면 그 자산 기준으로 이체 금액에 +/−를 붙인다.
@@ -165,7 +184,7 @@ fun TransactionRow(
     }
 }
 
-/** 날짜 머리글 + 그날의 거래들을 담은 둥근 카드. */
+/** 날짜 머리글 + 그날의 거래들을 담은 카드. */
 @Composable
 fun DayCard(
     section: DaySection,
@@ -173,24 +192,33 @@ fun DayCard(
     modifier: Modifier = Modifier,
     perspectiveAssetId: Long? = null,
 ) {
-    Card(
-        modifier = modifier.fillMaxWidth(),
-        shape = MaterialTheme.shapes.large,
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainerLowest),
-        elevation = CardDefaults.cardElevation(defaultElevation = 1.dp),
-    ) {
+    PiggyCard(modifier = modifier) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(start = 16.dp, end = 16.dp, top = 12.dp, bottom = 4.dp),
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            Text(
-                formatShortDate(section.date),
-                style = MaterialTheme.typography.titleSmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                modifier = Modifier.weight(1f),
-            )
+            val dateText = formatShortDate(section.date)
+            if (PiggyTheme.style.dayHeaderSticker) {
+                Text(
+                    dateText,
+                    style = MaterialTheme.typography.titleSmall,
+                    modifier = Modifier
+                        .clip(MaterialTheme.shapes.small)
+                        .background(MaterialTheme.colorScheme.primaryContainer)
+                        .padding(horizontal = 10.dp, vertical = 2.dp),
+                    color = MaterialTheme.colorScheme.onPrimaryContainer,
+                )
+                Spacer(Modifier.weight(1f))
+            } else {
+                Text(
+                    dateText,
+                    style = MaterialTheme.typography.titleSmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.weight(1f),
+                )
+            }
             Text(
                 formatSignedMoney(section.net),
                 style = MaterialTheme.typography.titleSmall,
@@ -200,7 +228,7 @@ fun DayCard(
         section.items.forEachIndexed { index, detail ->
             if (index > 0) {
                 HorizontalDivider(
-                    modifier = Modifier.padding(start = 64.dp, end = 16.dp),
+                    modifier = Modifier.padding(start = 66.dp, end = 16.dp),
                     color = MaterialTheme.colorScheme.outlineVariant,
                 )
             }

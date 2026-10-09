@@ -1,6 +1,6 @@
 package io.github.areswjd.piggybank.ui.assets
 
-import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -15,11 +15,10 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material.icons.rounded.MoreVert
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -42,8 +41,8 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -54,6 +53,11 @@ import io.github.areswjd.piggybank.data.local.dao.AssetBalance
 import io.github.areswjd.piggybank.data.repository.AssetGroupWithAssets
 import io.github.areswjd.piggybank.ui.AppViewModelProvider
 import io.github.areswjd.piggybank.ui.common.ConfirmDialog
+import io.github.areswjd.piggybank.ui.common.HighlightCard
+import io.github.areswjd.piggybank.ui.common.PigMascot
+import io.github.areswjd.piggybank.ui.common.PiggyCard
+import io.github.areswjd.piggybank.ui.common.highlightColors
+import io.github.areswjd.piggybank.ui.theme.HighlightStyle
 import io.github.areswjd.piggybank.ui.theme.PiggyTheme
 import io.github.areswjd.piggybank.util.formatMoney
 import kotlinx.coroutines.launch
@@ -185,27 +189,39 @@ fun AssetsScreen(
     }
 }
 
+/** 총자산 카드. 민트 사탕은 돼지를 오른쪽에, 나머지는 왼쪽에 둔다. */
 @Composable
 private fun TotalCard(total: Long) {
-    Card(
-        modifier = Modifier.fillMaxWidth(),
-        shape = MaterialTheme.shapes.large,
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primaryContainer),
-    ) {
+    val colors = highlightColors()
+    val mascotOnRight = PiggyTheme.style.highlightCard == HighlightStyle.FILLED
+    HighlightCard {
         Row(modifier = Modifier.padding(20.dp), verticalAlignment = Alignment.CenterVertically) {
-            Image(painterResource(R.drawable.pig_mascot), contentDescription = null, modifier = Modifier.size(56.dp))
-            Spacer(Modifier.width(16.dp))
-            Column {
+            if (!mascotOnRight) {
+                PigMascot(Modifier.size(56.dp))
+                Spacer(Modifier.width(16.dp))
+            }
+            Column(modifier = Modifier.weight(1f)) {
                 Text(
                     stringResource(R.string.total_assets),
                     style = MaterialTheme.typography.labelLarge,
-                    color = MaterialTheme.colorScheme.onPrimaryContainer,
+                    color = colors.subContent,
                 )
                 Text(
                     formatMoney(total),
                     style = MaterialTheme.typography.headlineMedium,
-                    color = if (total < 0) PiggyTheme.colors.expense else MaterialTheme.colorScheme.onPrimaryContainer,
+                    color = if (total < 0) PiggyTheme.colors.expense else colors.content,
                 )
+            }
+            if (mascotOnRight) {
+                Box(
+                    modifier = Modifier
+                        .size(64.dp)
+                        .clip(CircleShape)
+                        .background(MaterialTheme.colorScheme.surfaceVariant),
+                    contentAlignment = Alignment.Center,
+                ) {
+                    PigMascot(Modifier.size(48.dp))
+                }
             }
         }
     }
@@ -220,17 +236,25 @@ private fun GroupCard(
     onAssetClick: (Long) -> Unit,
 ) {
     var menuOpen by remember { mutableStateOf(false) }
-    Card(
-        modifier = Modifier.fillMaxWidth(),
-        shape = MaterialTheme.shapes.large,
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainerLowest),
-        elevation = CardDefaults.cardElevation(defaultElevation = 1.dp),
-    ) {
+    PiggyCard {
         Row(
             modifier = Modifier.padding(start = 16.dp, top = 4.dp, bottom = 4.dp),
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            Text(group.group.name, style = MaterialTheme.typography.titleMedium, modifier = Modifier.weight(1f))
+            if (PiggyTheme.style.dayHeaderSticker) {
+                Text(
+                    group.group.name,
+                    style = MaterialTheme.typography.titleMedium,
+                    color = MaterialTheme.colorScheme.onPrimaryContainer,
+                    modifier = Modifier
+                        .clip(MaterialTheme.shapes.small)
+                        .background(MaterialTheme.colorScheme.primaryContainer)
+                        .padding(horizontal = 10.dp, vertical = 2.dp),
+                )
+                Spacer(Modifier.weight(1f))
+            } else {
+                Text(group.group.name, style = MaterialTheme.typography.titleMedium, modifier = Modifier.weight(1f))
+            }
             Text(
                 formatMoney(group.subtotal),
                 style = MaterialTheme.typography.titleSmall,

@@ -2,66 +2,14 @@ package io.github.areswjd.piggybank.ui.theme
 
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.darkColorScheme
-import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.graphics.Color
-
-private val LightColors = lightColorScheme(
-    primary = PrimaryLight,
-    onPrimary = OnPrimaryLight,
-    primaryContainer = PrimaryContainerLight,
-    onPrimaryContainer = OnPrimaryContainerLight,
-    secondary = SecondaryLight,
-    secondaryContainer = SecondaryContainerLight,
-    onSecondaryContainer = OnSecondaryContainerLight,
-    tertiary = TertiaryLight,
-    tertiaryContainer = TertiaryContainerLight,
-    onTertiaryContainer = OnTertiaryContainerLight,
-    background = BackgroundLight,
-    onBackground = OnBackgroundLight,
-    surface = BackgroundLight,
-    onSurface = OnBackgroundLight,
-    surfaceVariant = SurfaceVariantLight,
-    onSurfaceVariant = OnSurfaceVariantLight,
-    outline = OutlineLight,
-    outlineVariant = OutlineVariantLight,
-    surfaceContainerLowest = SurfaceContainerLowestLight,
-    surfaceContainerLow = SurfaceContainerLowLight,
-    surfaceContainer = SurfaceContainerLight,
-    surfaceContainerHigh = SurfaceContainerHighLight,
-    surfaceContainerHighest = SurfaceContainerHighestLight,
-)
-
-private val DarkColors = darkColorScheme(
-    primary = PrimaryDark,
-    onPrimary = OnPrimaryDark,
-    primaryContainer = PrimaryContainerDark,
-    onPrimaryContainer = OnPrimaryContainerDark,
-    secondary = SecondaryDark,
-    secondaryContainer = SecondaryContainerDark,
-    onSecondaryContainer = OnSecondaryContainerDark,
-    tertiary = TertiaryDark,
-    tertiaryContainer = TertiaryContainerDark,
-    onTertiaryContainer = OnTertiaryContainerDark,
-    background = BackgroundDark,
-    onBackground = OnBackgroundDark,
-    surface = BackgroundDark,
-    onSurface = OnBackgroundDark,
-    surfaceVariant = SurfaceVariantDark,
-    onSurfaceVariant = OnSurfaceVariantDark,
-    outline = OutlineDark,
-    outlineVariant = OutlineVariantDark,
-    surfaceContainerLowest = SurfaceContainerLowestDark,
-    surfaceContainerLow = SurfaceContainerLowDark,
-    surfaceContainer = SurfaceContainerDark,
-    surfaceContainerHigh = SurfaceContainerHighDark,
-    surfaceContainerHighest = SurfaceContainerHighestDark,
-)
+import androidx.compose.ui.unit.Dp
+import io.github.areswjd.piggybank.model.AppDesign
 
 /** Material 색 체계에 없는 앱 전용 색. */
 @Immutable
@@ -71,28 +19,72 @@ data class PiggyColors(
     val transfer: Color,
 )
 
-private val LightPiggyColors = PiggyColors(income = IncomeLight, expense = ExpenseLight, transfer = TransferLight)
-private val DarkPiggyColors = PiggyColors(income = IncomeDark, expense = ExpenseDark, transfer = TransferDark)
+/** 카드 테두리. [dashed]이면 점선. */
+@Immutable
+data class CardBorder(val width: Dp, val light: Color, val dark: Color, val dashed: Boolean)
 
-private val LocalPiggyColors = staticCompositionLocalOf { LightPiggyColors }
+/** 거래 유형 표시: 동그라미 안 화살표 / 둥근 네모 안 화살표 / 도장 글자(수·지·이). */
+enum class BadgeStyle { CIRCLE_ICON, ROUNDED_ICON, STAMP }
+
+/** 기록(+) 버튼 모양. */
+enum class FabStyle { SQUARE, EXTENDED, CIRCLE_PENCIL }
+
+/** 총자산·현재 잔액처럼 강조하는 카드: 연한 색 / 진한 주 색 / 테두리. */
+enum class HighlightStyle { CONTAINER, FILLED, OUTLINED }
+
+/** 디자인마다 다른 화면 장식. */
+@Immutable
+data class PiggyStyle(
+    val cardBorder: CardBorder?,
+    val cardElevation: Dp,
+    /** 월 요약 줄을 글자 없이 색 점과 숫자만으로 짧게 보여줄지. */
+    val summaryCompact: Boolean,
+    val badge: BadgeStyle,
+    /** 날짜 머리글을 견출지(색 배경)처럼 보여줄지. */
+    val dayHeaderSticker: Boolean,
+    val fab: FabStyle,
+    /** 기록하기 화면에서 금액을 화면 가운데에 아주 크게 보여줄지. */
+    val amountHero: Boolean,
+    val highlightCard: HighlightStyle,
+)
+
+private val LocalPiggyColors = staticCompositionLocalOf { AppDesign.DEFAULT.spec().lightExtras }
+private val LocalPiggyStyle = staticCompositionLocalOf { AppDesign.DEFAULT.spec().style }
+private val LocalDarkTheme = staticCompositionLocalOf { false }
 
 object PiggyTheme {
     val colors: PiggyColors
         @Composable
         @ReadOnlyComposable
         get() = LocalPiggyColors.current
+
+    val style: PiggyStyle
+        @Composable
+        @ReadOnlyComposable
+        get() = LocalPiggyStyle.current
+
+    val isDark: Boolean
+        @Composable
+        @ReadOnlyComposable
+        get() = LocalDarkTheme.current
 }
 
 @Composable
 fun PiggyBankTheme(
+    design: AppDesign = AppDesign.DEFAULT,
     darkTheme: Boolean = isSystemInDarkTheme(),
     content: @Composable () -> Unit,
 ) {
-    CompositionLocalProvider(LocalPiggyColors provides if (darkTheme) DarkPiggyColors else LightPiggyColors) {
+    val spec = design.spec()
+    CompositionLocalProvider(
+        LocalPiggyColors provides if (darkTheme) spec.darkExtras else spec.lightExtras,
+        LocalPiggyStyle provides spec.style,
+        LocalDarkTheme provides darkTheme,
+    ) {
         MaterialTheme(
-            colorScheme = if (darkTheme) DarkColors else LightColors,
-            typography = PiggyTypography,
-            shapes = PiggyShapes,
+            colorScheme = if (darkTheme) spec.dark else spec.light,
+            typography = spec.typography,
+            shapes = spec.shapes,
             content = content,
         )
     }

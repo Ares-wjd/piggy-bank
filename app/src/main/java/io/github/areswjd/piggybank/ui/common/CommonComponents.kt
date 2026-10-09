@@ -54,11 +54,7 @@ fun EmptyState(message: String, modifier: Modifier = Modifier) {
         verticalArrangement = Arrangement.spacedBy(16.dp, Alignment.CenterVertically),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        Image(
-            painter = painterResource(R.drawable.pig_mascot),
-            contentDescription = null,
-            modifier = Modifier.size(112.dp),
-        )
+        PigMascot(Modifier.size(112.dp))
         Text(
             text = message,
             style = MaterialTheme.typography.titleMedium,
@@ -66,6 +62,12 @@ fun EmptyState(message: String, modifier: Modifier = Modifier) {
             textAlign = TextAlign.Center,
         )
     }
+}
+
+/** 돼지 마스코트 그림. */
+@Composable
+fun PigMascot(modifier: Modifier = Modifier) {
+    Image(painter = painterResource(R.drawable.pig_mascot), contentDescription = null, modifier = modifier)
 }
 
 /** 확인/취소 팝업. [destructive]이면 확인 버튼을 경고색으로 칠한다. */

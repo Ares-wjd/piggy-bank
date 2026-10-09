@@ -1,5 +1,6 @@
 package io.github.areswjd.piggybank.ui.ledger
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -13,16 +14,20 @@ import androidx.compose.foundation.text.TextAutoSize
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Add
+import androidx.compose.material.icons.rounded.Edit
 import androidx.compose.material.icons.rounded.Visibility
 import androidx.compose.material.icons.rounded.VisibilityOff
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -41,6 +46,7 @@ import io.github.areswjd.piggybank.ui.AppViewModelProvider
 import io.github.areswjd.piggybank.ui.common.DayCard
 import io.github.areswjd.piggybank.ui.common.EmptyState
 import io.github.areswjd.piggybank.ui.common.MonthSelector
+import io.github.areswjd.piggybank.ui.theme.FabStyle
 import io.github.areswjd.piggybank.ui.theme.PiggyTheme
 import io.github.areswjd.piggybank.util.formatMoney
 
@@ -59,15 +65,7 @@ fun LedgerScreen(
                 title = { MonthSelector(state.month, viewModel::previousMonth, viewModel::nextMonth) },
             )
         },
-        floatingActionButton = {
-            FloatingActionButton(
-                onClick = onAddTransaction,
-                containerColor = MaterialTheme.colorScheme.primary,
-                contentColor = MaterialTheme.colorScheme.onPrimary,
-            ) {
-                Icon(Icons.Rounded.Add, contentDescription = stringResource(R.string.add_transaction))
-            }
-        },
+        floatingActionButton = { AddTransactionButton(onAddTransaction) },
     ) { padding ->
         Column(modifier = Modifier.padding(padding).fillMaxSize()) {
             SummaryBar(
@@ -109,19 +107,41 @@ private fun SummaryBar(
     val netLabel = stringResource(R.string.summary_net)
     val colors = PiggyTheme.colors
     val netColor = MaterialTheme.colorScheme.onSurface
+    val compact = PiggyTheme.style.summaryCompact
     val text = buildAnnotatedString {
-        withStyle(SpanStyle(color = labelColor)) { append("$incomeLabel ") }
-        withStyle(SpanStyle(color = colors.income)) { append(amount(summary.income)) }
-        withStyle(SpanStyle(color = labelColor)) { append("  ·  $expenseLabel ") }
-        withStyle(SpanStyle(color = colors.expense)) { append(amount(summary.expense)) }
-        withStyle(SpanStyle(color = labelColor)) { append("  ·  $netLabel ") }
-        withStyle(SpanStyle(color = netColor)) { append(amount(summary.net)) }
+        if (compact) {
+            // B. 민트 사탕: "● 3,000,000  ● 452,000  = 2,548,000"
+            withStyle(SpanStyle(color = colors.income)) { append("● ") }
+            withStyle(SpanStyle(color = netColor)) { append(amount(summary.income)) }
+            withStyle(SpanStyle(color = colors.expense)) { append("   ● ") }
+            withStyle(SpanStyle(color = netColor)) { append(amount(summary.expense)) }
+            withStyle(SpanStyle(color = labelColor)) { append("   = ") }
+            withStyle(SpanStyle(color = netColor)) { append(amount(summary.net)) }
+        } else {
+            withStyle(SpanStyle(color = labelColor)) { append("$incomeLabel ") }
+            withStyle(SpanStyle(color = colors.income)) { append(amount(summary.income)) }
+            withStyle(SpanStyle(color = labelColor)) { append("  ·  $expenseLabel ") }
+            withStyle(SpanStyle(color = colors.expense)) { append(amount(summary.expense)) }
+            withStyle(SpanStyle(color = labelColor)) { append("  ·  $netLabel ") }
+            withStyle(SpanStyle(color = netColor)) { append(amount(summary.net)) }
+        }
     }
 
+    val border = PiggyTheme.style.cardBorder
+    val shape = if (border != null) MaterialTheme.shapes.medium else MaterialTheme.shapes.extraLarge
     Surface(
         modifier = modifier.fillMaxWidth(),
-        shape = MaterialTheme.shapes.extraLarge,
-        color = MaterialTheme.colorScheme.surfaceContainer,
+        shape = shape,
+        color = if (border != null && !border.dashed) {
+            MaterialTheme.colorScheme.surfaceContainerLowest
+        } else {
+            MaterialTheme.colorScheme.surfaceContainer
+        },
+        border = if (border != null && !border.dashed) {
+            BorderStroke(border.width, if (PiggyTheme.isDark) border.dark else border.light)
+        } else {
+            null
+        },
     ) {
         Row(
             modifier = Modifier.padding(start = 20.dp, end = 4.dp),
@@ -141,6 +161,35 @@ private fun SummaryBar(
                     tint = labelColor,
                 )
             }
+        }
+    }
+}
+
+/** 기록하기 버튼. 화면 디자인에 따라 둥근 네모 / "+ 기록" 알약 / 동그라미 연필. */
+@Composable
+private fun AddTransactionButton(onClick: () -> Unit) {
+    val label = stringResource(R.string.add_transaction)
+    val containerColor = MaterialTheme.colorScheme.primary
+    val contentColor = MaterialTheme.colorScheme.onPrimary
+    when (PiggyTheme.style.fab) {
+        FabStyle.SQUARE -> FloatingActionButton(onClick = onClick, containerColor = containerColor, contentColor = contentColor) {
+            Icon(Icons.Rounded.Add, contentDescription = label)
+        }
+        FabStyle.EXTENDED -> ExtendedFloatingActionButton(
+            onClick = onClick,
+            containerColor = containerColor,
+            contentColor = contentColor,
+            shape = CircleShape,
+            icon = { Icon(Icons.Rounded.Add, contentDescription = null) },
+            text = { Text(stringResource(R.string.add_transaction_short), style = MaterialTheme.typography.titleMedium) },
+        )
+        FabStyle.CIRCLE_PENCIL -> FloatingActionButton(
+            onClick = onClick,
+            containerColor = containerColor,
+            contentColor = contentColor,
+            shape = CircleShape,
+        ) {
+            Icon(Icons.Rounded.Edit, contentDescription = label)
         }
     }
 }

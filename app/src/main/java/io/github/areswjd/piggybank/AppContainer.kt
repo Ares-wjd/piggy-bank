@@ -38,7 +38,7 @@ class AppContainer(context: Context) {
         UpdateManager(
             appContext,
             GitHubReleaseClient(BuildConfig.UPDATE_REPOSITORY),
-            currentVersion = BuildConfig.VERSION_NAME,
+            preferences,
             currentVersionCode = BuildConfig.VERSION_CODE.toLong(),
             enabled = BuildConfig.UPDATE_CHECK_ENABLED,
         )

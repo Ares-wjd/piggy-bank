@@ -7,25 +7,55 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import io.github.areswjd.piggybank.R
 
-/** 동글동글한 한글 폰트 Jua (SIL OFL 1.1, docs/licenses/Jua-OFL.txt). 굵기는 Regular 하나뿐이다. */
+// 글꼴은 모두 SIL OFL 1.1 (docs/licenses). 고운돋움·개구는 자주 쓰는 한글 2,350자만 담았다. 없는 글자는 폰 기본 글꼴로 보인다.
+
+/** 동글동글한 제목용 글꼴 (A. 딸기우유). 굵기는 Regular 하나. */
 val Jua = FontFamily(Font(R.font.jua_regular))
+
+/** 부드러운 본문 글꼴 (B. 민트 사탕, C. 버터 다이어리). */
+val GowunDodum = FontFamily(Font(R.font.gowun_dodum_regular))
+
+/** 손글씨 제목 글꼴 (C. 버터 다이어리). */
+val Gaegu = FontFamily(Font(R.font.gaegu_bold, FontWeight.Bold))
 
 private val Default = Typography()
 
-// 제목·라벨·버튼은 Jua로 아기자기하게, 긴 본문은 읽기 쉬운 기본 폰트로 둔다.
-private fun TextStyle.jua() = copy(fontFamily = Jua, fontWeight = FontWeight.Normal)
+/** 숫자 자릿수를 맞춘다(금액이 세로로 가지런하게). */
+private fun TextStyle.tnum() = copy(fontFeatureSettings = "tnum")
 
-val PiggyTypography = Typography(
-    displayLarge = Default.displayLarge.jua(),
-    displayMedium = Default.displayMedium.jua(),
-    displaySmall = Default.displaySmall.jua(),
-    headlineLarge = Default.headlineLarge.jua(),
-    headlineMedium = Default.headlineMedium.jua(),
-    headlineSmall = Default.headlineSmall.jua(),
-    titleLarge = Default.titleLarge.jua(),
-    titleMedium = Default.titleMedium.jua(),
-    titleSmall = Default.titleSmall.jua(),
-    labelLarge = Default.labelLarge.jua(),
-    labelMedium = Default.labelMedium.jua(),
-    labelSmall = Default.labelSmall.jua(),
+/** 제목·라벨 스타일과 본문 스타일을 따로 정해 Typography를 만든다. */
+private fun typography(title: (TextStyle) -> TextStyle, body: (TextStyle) -> TextStyle) = Typography(
+    displayLarge = title(Default.displayLarge).tnum(),
+    displayMedium = title(Default.displayMedium).tnum(),
+    displaySmall = title(Default.displaySmall).tnum(),
+    headlineLarge = title(Default.headlineLarge).tnum(),
+    headlineMedium = title(Default.headlineMedium).tnum(),
+    headlineSmall = title(Default.headlineSmall).tnum(),
+    titleLarge = title(Default.titleLarge).tnum(),
+    titleMedium = title(Default.titleMedium).tnum(),
+    titleSmall = title(Default.titleSmall).tnum(),
+    labelLarge = title(Default.labelLarge).tnum(),
+    labelMedium = title(Default.labelMedium).tnum(),
+    labelSmall = title(Default.labelSmall).tnum(),
+    bodyLarge = body(Default.bodyLarge).tnum(),
+    bodyMedium = body(Default.bodyMedium).tnum(),
+    bodySmall = body(Default.bodySmall).tnum(),
+)
+
+/** A: 제목·숫자·버튼은 Jua, 본문은 폰 기본 글꼴. */
+internal val StrawberryTypography = typography(
+    title = { it.copy(fontFamily = Jua, fontWeight = FontWeight.Normal) },
+    body = { it },
+)
+
+/** B: 전부 고운돋움. 제목은 굵게. */
+internal val MintTypography = typography(
+    title = { it.copy(fontFamily = GowunDodum, fontWeight = FontWeight.Bold) },
+    body = { it.copy(fontFamily = GowunDodum) },
+)
+
+/** C: 제목·숫자·버튼은 개구(손글씨, 같은 크기에서 작아 보여 조금 키움), 본문은 고운돋움. */
+internal val ButterTypography = typography(
+    title = { it.copy(fontFamily = Gaegu, fontWeight = FontWeight.Bold, fontSize = it.fontSize * 1.18f) },
+    body = { it.copy(fontFamily = GowunDodum) },
 )
