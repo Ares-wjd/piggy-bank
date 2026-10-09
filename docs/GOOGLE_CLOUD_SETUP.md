@@ -28,6 +28,18 @@ Piggy bank는 사용자 **본인의** 구글 계정으로 로그인하고, 그 �
    - 다른 사람이 자기 계정으로 쓰려면 반드시 프로덕션이어야 한다.
    - 콘솔에서 앱 확인(verification)을 요구하면 안내에 따른다. 확인 전이라도 사용자에게 "확인되지 않은 앱" 경고가 나올 수 있으며, **고급 → 이동**으로 계속할 수 있다.
 
+### 앱 도메인 (게시 버튼이 비활성일 때)
+
+"앱을 게시하려면 브랜딩 페이지에서 구성을 완료해야 합니다"라고 나오며 **앱 게시**가 눌리지 않으면, 브랜딩 페이지에 아래 내용을 추가한다. 페이지는 GitHub Pages로 제공한다(저장소 `docs/index.md`, `docs/privacy.md`).
+
+| 항목 | 값 |
+|---|---|
+| 애플리케이션 홈페이지 | `https://ares-wjd.github.io/piggy-bank/` |
+| 애플리케이션 개인정보처리방침 링크 | `https://ares-wjd.github.io/piggy-bank/privacy.html` |
+| 승인된 도메인 | `ares-wjd.github.io` |
+
+GitHub Pages 켜기: 저장소 **Settings → Pages → Build and deployment → Source: Deploy from a branch → Branch: `main`, 폴더 `/docs` → Save**
+
 ## 4. Android OAuth 클라이언트 만들기
 
 **API 및 서비스 → 사용자 인증 정보 → 사용자 인증 정보 만들기 → OAuth 클라이언트 ID** (새 콘솔: **Google 인증 플랫폼 → 클라이언트 → 클라이언트 만들기**)
